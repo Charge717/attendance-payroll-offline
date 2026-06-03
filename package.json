@@ -1,0 +1,21 @@
+{
+  "name": "attendance-payroll-offline",
+  "version": "1.7.0",
+  "private": false,
+  "description": "Offline-first attendance and Taiwan-focused payroll management tool.",
+  "scripts": {
+    "test": "node --test tests/payroll-calculation.test.js",
+    "check": "node --check tests/payroll-calculation.test.js"
+  },
+  "keywords": [
+    "attendance",
+    "payroll",
+    "offline",
+    "taiwan",
+    "hr"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}

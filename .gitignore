@@ -1,0 +1,31 @@
+# Dependencies and caches
+node_modules/
+.cache/
+.parcel-cache/
+
+# Build/test output
+coverage/
+dist/
+tmp/
+temp/
+
+# Local editor files
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Private payroll data and generated exports
+*.xlsx
+*.xls
+*.csv
+*.zip
+*backup*.json
+*備份*.json
+*薪資*.json
+*出勤資料*.json
+
+# Keep public documentation PDFs, but avoid accidental local report dumps.
+!docs/*.pdf
