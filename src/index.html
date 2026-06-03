@@ -1003,6 +1003,9 @@ const UI_TEXT_TRANSLATIONS = {
     '刪除': 'Delete',
     '特休管理': 'Annual Leave',
     '一般上班日': 'Regular Workday',
+    '平日': 'Weekday',
+    '休息日加班': 'Rest-Day Overtime',
+    '例假日加班': 'Regular-Day Overtime',
     '國定假日': 'Public Holiday',
     '系統內建國定假日': 'Built-in Public Holiday',
     '自訂國定假日': 'Custom Public Holiday',
@@ -1037,7 +1040,107 @@ const UI_TEXT_TRANSLATIONS = {
     '補休': 'Comp Time',
     '本月無統計資料': 'No statistics for this month',
     '本月無總表資料': 'No summary data for this month',
+    '合計': 'Total',
     '目前沒有可編輯月結項目的在職員工。': 'No active employees are available for monthly adjustment editing.',
+    '請先選擇報表月份，再編輯月結手動項目。': 'Select a report month before editing monthly adjustments.',
+    '尚無在職員工資料': 'No active employee records',
+    '尚無員工資料，請點選「新增員工」': 'No employee records yet. Click "Add Employee".',
+    '本月無出勤紀錄': 'No attendance records this month',
+    '此年度尚未設定任何假期例外': 'No holiday overrides for this year',
+    '尚未建立勞健保參考表': 'No insurance reference table yet',
+    '尚無在職員工': 'No active employees',
+    '本年度無假勤紀錄': 'No leave records this year',
+    '月結手動項目': 'Monthly Adjustments',
+    '儲存本月項目': 'Save Monthly Items',
+    '月結欄位可處理制度外特例。可輸入伙食津貼、伙食代墊、其他費用，也保留薪資加項與薪資減項供彈性調整；各項均可填品項備註。': 'Monthly fields handle exceptions outside standard rules. You can enter meal allowance, meal advance, other expense, payroll additions, payroll deductions, and item notes.',
+    '品項備註': 'Item Note',
+    '勞保覆寫': 'Labor Override',
+    '健保覆寫': 'Health Override',
+    '勞退覆寫': 'Pension Override',
+    '其他扣款覆寫': 'Other Deduction Override',
+    '報表員工數': 'Report Employees',
+    '異常筆數': 'Anomaly Count',
+    '加班費合計': 'Total Overtime Pay',
+    '實發合計': 'Total Net Pay',
+    '員工月薪資明細': 'Employee Monthly Payroll Details',
+    '底薪/工時薪資': 'Base / Hourly Pay',
+    '月結加項': 'Monthly Additions',
+    '月結扣項': 'Monthly Deductions',
+    '保險/其他扣款': 'Insurance / Other Deductions',
+    '實發': 'Net',
+    '月中到職': 'Mid-month Start',
+    '本月無薪資資料': 'No payroll data this month',
+    '公司月總表': 'Company Monthly Summary',
+    '月份': 'Month',
+    '出勤天數': 'Attendance Days',
+    '請假天數': 'Leave Days',
+    '遲到分鐘': 'Late Minutes',
+    '早退分鐘': 'Early Leave Minutes',
+    '加班時數': 'Overtime Hours',
+    '出勤異常清單': 'Attendance Anomaly List',
+    '等級': 'Level',
+    '說明': 'Description',
+    '本月未發現異常': 'No anomalies found this month',
+    '正常上班日沒有出勤或請假資料，請確認是否漏 KEY': 'Regular workday has no attendance or leave record. Check whether a punch record is missing.',
+    '員工月統計': 'Employee Monthly Statistics',
+    '補休累積': 'Comp Time Earned',
+    '正常工時合計': 'Total Regular Hours',
+    '遲到分鐘合計': 'Total Late Minutes',
+    '加班小時合計': 'Total Overtime Hours',
+    '正式薪資單': 'Official Payslip',
+    '薪資編號': 'Payslip No.',
+    '薪資月份': 'Payroll Month',
+    '列印時間': 'Print Time',
+    '員工姓名': 'Employee Name',
+    '請假摘要': 'Leave Summary',
+    '應發項目': 'Earnings',
+    '扣款項目': 'Deductions',
+    '底薪工資': 'Base Pay',
+    '勞保原始自付': 'Original Labor Insurance',
+    '健保原始自付': 'Original Health Insurance',
+    '身障補助勞保減免': 'Labor Insurance Disability Subsidy',
+    '身障補助健保減免': 'Health Insurance Disability Subsidy',
+    '身障等級': 'Disability Level',
+    '月結保險覆寫': 'Monthly Insurance Override',
+    '保險來源': 'Insurance Source',
+    '參考表': 'Reference Table',
+    '手動': 'Manual',
+    '是': 'Yes',
+    '套用參考表': 'Reference Table Applied',
+    '月結保險覆寫': 'Monthly Insurance Override',
+    '已依 HR 當月調整值顯示勞保 / 健保 / 勞退 / 其他扣款': 'Displayed with HR monthly overrides for labor insurance, health insurance, pension, and other deductions',
+    '已依 HR 月結資料調整': 'Adjusted by HR monthly data',
+    '保險來源': 'Insurance Source',
+    '手動輸入': 'Manual Input',
+    '勞保減': 'Labor reduced',
+    '健保減': 'Health reduced',
+    '勞保扣款': 'Labor Insurance Deduction',
+    '健保扣款': 'Health Insurance Deduction',
+    '補休累計（本月）': 'Comp Time Earned This Month',
+    '本月項目備註': 'Monthly Item Notes',
+    '應發合計（稅前）': 'Gross Total Before Tax',
+    '查看逐日明細': 'View Daily Details',
+    '逐日明細': 'Daily Details',
+    '遲到(分)': 'Late (min)',
+    '早退(分)': 'Early Leave (min)',
+    '加班時數': 'Overtime Hours',
+    '出勤明細': 'Attendance Details',
+    '薪資總表': 'Payroll Summary',
+    '薪資單': 'Payslips',
+    '異常清單': 'Anomaly List',
+    '暫無資料': 'No data',
+    '出勤薪資報表': 'attendance-payroll-report',
+    '本日補休': 'Comp time today',
+    '國定假日：本次採「加發 1 日工資」': 'Public holiday: this record uses "Pay 1 Additional Day"',
+    '國定假日：本次採「補休 8 小時」': 'Public holiday: this record uses "Grant 8 h Comp Time"',
+    '不另給補休': 'no extra comp time',
+    '不另計 1 日工資': 'no extra 1-day pay',
+    '金額': 'Amount',
+    '薪資結算報表': 'Payroll Settlement Report',
+    '出勤': 'Attendance',
+    '人': 'people',
+    '上午': 'AM',
+    '下午': 'PM',
     '例：2026 新制': 'e.g. 2026 policy',
     '留空表示以上': 'Leave blank for and above',
     '例：公司補假 / 補班日': 'e.g. company holiday / make-up workday',
@@ -1109,11 +1212,32 @@ function translatePatternText(value, locale) {
   if (normalizeLocale(locale) !== 'en') return value;
   const weekdays = WEEKDAY_TEXT_TRANSLATIONS.en;
   return String(value)
+    .replace(/(\d{4})\s*年\s*(\d{1,2})\s*月/g, (_, year, month) => `${year}-${String(month).padStart(2, '0')}`)
     .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*元/g, 'NT$$$1')
     .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*分鐘/g, '$1 min')
     .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*小時/g, '$1 h')
     .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*天/g, '$1 days')
+    .replace(/(\d+)\s*人/g, '$1 people')
+    .replace(/(\d+)\s*筆/g, '$1 rows')
     .replace(/週([日一二三四五六])/g, (_, day) => weekdays[day] || day);
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function localizeTextContent(value, locale = getAppLocale()) {
+  const normalized = normalizeLocale(locale);
+  if (normalized === 'zh-TW') return String(value);
+  const dictionary = UI_TEXT_TRANSLATIONS[normalized] || {};
+  let output = String(value);
+  Object.keys(dictionary)
+    .filter(key => key.length > 1 || ['無', '是'].includes(key))
+    .sort((a, b) => b.length - a.length)
+    .forEach(key => {
+      output = output.replace(new RegExp(escapeRegExp(key), 'g'), dictionary[key]);
+    });
+  return translatePatternText(output, normalized);
 }
 
 function translateLiteralText(value, locale = getAppLocale()) {
@@ -1128,14 +1252,44 @@ function translateLiteralText(value, locale = getAppLocale()) {
   return source.replace(trimmed, translated);
 }
 
+function localizeHtmlOutput(html, locale = getAppLocale()) {
+  return normalizeLocale(locale) === 'zh-TW' ? String(html) : localizeTextContent(html, locale);
+}
+
+function localizeWorkbookValue(value, locale = getAppLocale()) {
+  return typeof value === 'string' ? localizeTextContent(value, locale) : value;
+}
+
+function localizeReportWorkbookData(workbookData, locale = getAppLocale()) {
+  const normalized = normalizeLocale(locale);
+  if (normalized === 'zh-TW') return workbookData;
+  const sheets = {};
+  const sheetNames = workbookData.sheetNames.map(name => localizeTextContent(name, normalized).slice(0, 31));
+  workbookData.sheetNames.forEach((sourceName, index) => {
+    const targetName = sheetNames[index];
+    sheets[targetName] = (workbookData.sheets[sourceName] || []).map(row => {
+      const nextRow = {};
+      Object.entries(row).forEach(([key, value]) => {
+        nextRow[localizeTextContent(key, normalized)] = localizeWorkbookValue(value, normalized);
+      });
+      return nextRow;
+    });
+  });
+  return { sheetNames, sheets };
+}
+
 function translateDialogText(message, locale = getAppLocale()) {
   const normalized = normalizeLocale(locale);
   const source = String(message);
+  if (normalized === 'en') {
+    const dynamic = source
+      .replace(/^將載入 (\d{4}) 官方參考表 (\d+) 筆，保留現有自訂列 (\d+) 筆。是否繼續？$/, 'Load the $1 official reference table with $2 rows and keep $3 custom rows. Continue?')
+      .replace(/^確定匯入？將覆蓋現有資料（(\d+) 名員工，(\d+) 筆出勤，(\d+) 筆假勤）$/, 'Import and overwrite current data? This includes $1 employees, $2 attendance records, and $3 leave records.');
+    if (dynamic !== source) return dynamic;
+  }
   const literal = translateLiteralText(source, normalized);
   if (literal !== source || normalized !== 'en') return literal;
-  return source
-    .replace(/^將載入 (\d{4}) 官方參考表 (\d+) 筆，保留現有自訂列 (\d+) 筆。是否繼續？$/, 'Load the $1 official reference table with $2 rows and keep $3 custom rows. Continue?')
-    .replace(/^確定匯入？將覆蓋現有資料（(\d+) 名員工，(\d+) 筆出勤，(\d+) 筆假勤）$/, 'Import and overwrite current data? This includes $1 employees, $2 attendance records, and $3 leave records.');
+  return source;
 }
 
 function shouldTranslateTextNode(node) {
@@ -1713,17 +1867,17 @@ function renderMonthlyAdjustmentEditor() {
 
   const monthVal = document.getElementById('reportMonth')?.value || '';
   if (!monthVal) {
-    panel.innerHTML = '<div class="alert alert-light border mb-0">請先選擇報表月份，再編輯月結手動項目。</div>';
+    panel.innerHTML = localizeHtmlOutput('<div class="alert alert-light border mb-0">請先選擇報表月份，再編輯月結手動項目。</div>');
     return;
   }
 
   const emps = getReportFilteredEmployees();
   if (!emps.length) {
-    panel.innerHTML = '<div class="alert alert-light border mb-0">目前沒有可編輯月結項目的在職員工。</div>';
+    panel.innerHTML = localizeHtmlOutput('<div class="alert alert-light border mb-0">目前沒有可編輯月結項目的在職員工。</div>');
     return;
   }
 
-  panel.innerHTML = `
+  panel.innerHTML = localizeHtmlOutput(`
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="bi bi-sliders me-1"></i>月結手動項目</span>
@@ -1771,7 +1925,7 @@ function renderMonthlyAdjustmentEditor() {
           </table>
         </div>
       </div>
-    </div>`;
+    </div>`);
 }
 
 function saveVisibleMonthlyAdjustments() {
@@ -3609,7 +3763,9 @@ function anomalyBadge(severity) {
     low: ['bg-secondary', '低']
   };
   const [cls, label] = map[severity] || ['bg-secondary', severity];
-  return `<span class="badge ${cls} rounded-pill">${label}</span>`;
+  const enLabels = { '高': 'High', '中': 'Medium', '低': 'Low' };
+  const displayLabel = getAppLocale() === 'en' ? (enLabels[label] || label) : label;
+  return `<span class="badge ${cls} rounded-pill">${displayLabel}</span>`;
 }
 
 function renderReports() {
@@ -3638,7 +3794,7 @@ function renderReports() {
     ${renderEmployeeStatsReport(snapshots, totalLeaveDays)}
   `;
 
-  document.getElementById('reportResult').innerHTML = html;
+  document.getElementById('reportResult').innerHTML = localizeHtmlOutput(html);
 }
 
 function renderEmployeePayrollReport(snapshots) {
@@ -3899,7 +4055,7 @@ function printPayslips() {
     return;
   }
 
-  const html = snapshots.map(buildPayslipPrintHtml).join('');
+  const html = localizeHtmlOutput(snapshots.map(buildPayslipPrintHtml).join(''));
   const printWindow = window.open('', '_blank', 'width=1024,height=900');
   if (!printWindow) {
     document.getElementById('reportPrintArea').innerHTML = html;
@@ -3907,7 +4063,7 @@ function printPayslips() {
     return;
   }
 
-  printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>正式薪資單</title><style>${getPayslipPrintStyles()}</style></head><body>${html}</body></html>`);
+  printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${translateLiteralText('正式薪資單')}</title><style>${getPayslipPrintStyles()}</style></head><body>${html}</body></html>`);
   printWindow.document.close();
   printWindow.focus();
   printWindow.print();
@@ -4015,16 +4171,18 @@ function exportReportsXlsx() {
   }
 
   const { year, month, empIdFilter } = getCurrentReportSelection();
-  const workbookData = buildReportWorkbookData(year, month, empIdFilter);
+  const workbookData = localizeReportWorkbookData(buildReportWorkbookData(year, month, empIdFilter));
   const wb = XLSX.utils.book_new();
 
   workbookData.sheetNames.forEach(name => {
     const rows = workbookData.sheets[name];
-    const ws = rows.length ? XLSX.utils.json_to_sheet(rows) : XLSX.utils.aoa_to_sheet([[`${name} 暫無資料`]]);
+    const ws = rows.length ? XLSX.utils.json_to_sheet(rows) : XLSX.utils.aoa_to_sheet([[localizeTextContent(`${name} 暫無資料`)]]);
     XLSX.utils.book_append_sheet(wb, ws, name);
   });
 
-  const fileName = `出勤薪資報表_${year}${String(month).padStart(2,'0')}.xlsx`;
+  const fileName = getAppLocale() === 'en'
+    ? `attendance-payroll-report_${year}${String(month).padStart(2,'0')}.xlsx`
+    : `出勤薪資報表_${year}${String(month).padStart(2,'0')}.xlsx`;
   XLSX.writeFile(wb, fileName);
 }
 
@@ -4037,7 +4195,7 @@ function calculatePayroll() {
   const [y, m] = monthVal.split('-').map(Number);
   const emps = getEmployees(true);
   if (!emps.length) { document.getElementById('payrollResult').innerHTML =
-    '<div class="alert alert-warning">尚無在職員工資料</div>'; return; }
+    localizeHtmlOutput('<div class="alert alert-warning">尚無在職員工資料</div>'); return; }
   const snapshots = emps.map(emp => buildPayrollSnapshot(emp, y, m));
   const payrollTotals = getPayrollSummaryTotals(snapshots);
 
@@ -4234,7 +4392,7 @@ function calculatePayroll() {
     </div>`;
   }
 
-  document.getElementById('payrollResult').innerHTML = html;
+  document.getElementById('payrollResult').innerHTML = localizeHtmlOutput(html);
 }
 
 // =============================================

@@ -356,3 +356,63 @@ test('English locale translates common static UI labels and payroll units', () =
     'Load the 2026 official reference table with 10 rows and keep 2 custom rows. Continue?'
   );
 });
+
+test('English locale localizes payroll, report, payslip, and workbook outputs', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-alex',
+    name: 'Alex Lin',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 1000,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    start: '2026-01-01',
+    active: true,
+    note: ''
+  };
+
+  seedData(app, {
+    employees: [emp],
+    attendance: [{
+      id: 'att-full-day',
+      empId: emp.id,
+      date: '2026-04-01',
+      checkIn: '08:00',
+      checkOut: '17:00',
+      dayType: 'normal',
+      holidayMode: '',
+      note: ''
+    }]
+  });
+
+  app.setAppLocale('en');
+  app.document.getElementById('reportMonth').value = '2026-04';
+  app.document.getElementById('reportEmpFilter').value = '';
+  app.renderReports();
+
+  const reportHtml = app.document.getElementById('reportResult').innerHTML;
+  assert.doesNotMatch(reportHtml, /[\u4e00-\u9fff]/);
+  assert.match(reportHtml, /Employee Monthly Payroll Details/);
+  assert.match(reportHtml, /Company Monthly Summary/);
+
+  app.document.getElementById('payMonth').value = '2026-04';
+  app.calculatePayroll();
+  const payrollHtml = app.document.getElementById('payrollResult').innerHTML;
+  assert.doesNotMatch(payrollHtml, /[\u4e00-\u9fff]/);
+  assert.match(payrollHtml, /Payroll Settlement Report/);
+  assert.match(payrollHtml, /All-Employee Net Payroll Total/);
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  const payslipHtml = app.localizeHtmlOutput(app.buildPayslipPrintHtml(snapshot), 'en');
+  assert.doesNotMatch(payslipHtml, /[\u4e00-\u9fff]/);
+  assert.match(payslipHtml, /Official Payslip/);
+  assert.match(payslipHtml, /Employee Signature/);
+
+  const workbook = app.localizeReportWorkbookData(app.buildReportWorkbookData(2026, 4, ''), 'en');
+  assert.deepEqual(Array.from(workbook.sheetNames), ['Payroll Summary', 'Payslips', 'Attendance Details', 'Anomaly List']);
+  assert.equal(Object.keys(workbook.sheets['Payroll Summary'][0]).includes('Employee'), true);
+  assert.equal(Object.keys(workbook.sheets['Payroll Summary'][0]).some(key => /[\u4e00-\u9fff]/.test(key)), false);
+});
