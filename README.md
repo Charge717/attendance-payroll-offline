@@ -2,9 +2,19 @@
 
 Offline-first attendance and payroll management for small teams.
 
+出勤薪資管理系統是一套離線優先的小型團隊出勤與薪資結算工具。主程式可直接用瀏覽器開啟，資料預設儲存在使用者本機瀏覽器，適合需要簡單記錄出勤、假勤、月結薪資、薪資單列印與備份還原的店家、工作室或小型組織。
+
 This project began as a Taiwan-focused attendance and payroll tool. It runs as a single HTML file, stores data locally in the browser, supports JSON backup/restore, and includes regression tests for payroll and leave calculations.
 
 > Core UI supports multiple languages, but payroll/legal calculation presets are Taiwan-focused by default.
+
+> 核心介面支援多語系，但薪資 / 法規計算預設以台灣規則為主。
+
+## Project Positioning
+
+This repository is not just one loose HTML file. The app is packaged as a portable single-file browser application, with supporting documentation, regression tests, GitHub workflows, issue templates, and contribution guidelines around it.
+
+這個 repository 不是單純只丟一個 HTML 檔案。主程式採用單一 HTML 是為了離線使用與部署方便；周邊已補上文件、測試、GitHub Actions、issue template、授權與貢獻說明，方便其他人理解、驗證與協作。
 
 ## Features
 
@@ -52,6 +62,8 @@ node --check tests/payroll-calculation.test.js
 - English overview: [docs/README.en.md](docs/README.en.md)
 - Internationalization notes: [docs/i18n.md](docs/i18n.md)
 - GitHub publishing guide: [docs/github-publish.zh-TW.md](docs/github-publish.zh-TW.md)
+- GitHub profile copy: [docs/github-profile.md](docs/github-profile.md)
+- Architecture notes: [docs/architecture.md](docs/architecture.md)
 
 ## Privacy and Data
 

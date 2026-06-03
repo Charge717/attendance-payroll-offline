@@ -5,6 +5,7 @@
 - 補上 MIT License、README、CONTRIBUTING、SECURITY、Code of Conduct、GitHub issue / pull request template 與 GitHub Actions 測試流程。
 - 新增英文專案概覽、英文使用手冊與 i18n 策略文件。
 - 新增 GitHub 發布流程文件，說明 remote、push、作者資訊與隱私檢查。
+- 新增 GitHub repository profile 建議文案與單一 HTML 架構說明，方便公開頁面描述與貢獻者理解專案定位。
 - 主程式新增核心 UI 語系骨架，支援 `zh-TW` 與 `en`，並保留台灣薪資 / 法規預設範圍聲明。
 - 測試新增核心語系標籤驗證，確保英文入口與範圍聲明可被程式讀取。
 
