@@ -69,6 +69,12 @@ Recommended backup timing:
 - Before clearing browser data
 - Before testing a new release
 
+## Demo Data
+
+Use Backup > Load Demo Data to load a fictional dataset for public demos and local testing.
+
+The demo dataset overwrites the current browser data, so export a backup first when working with real records. Demo names, notes, attendance, leave, and payroll adjustments are fictional and English-friendly.
+
 ## Developer Checks
 
 Run the regression tests before changing payroll logic:

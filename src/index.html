@@ -506,6 +506,13 @@
       </div>
       <div class="col-md-4">
         <div class="card p-3">
+          <h6 class="fw-bold mb-2"><i class="bi bi-stars me-1 text-warning"></i>載入範例資料</h6>
+          <p class="text-muted small">載入一組 fictional demo data，方便公開展示、測試英文報表與薪資結算流程。</p>
+          <button class="btn btn-warning btn-sm" onclick="loadDemoData()"><i class="bi bi-stars me-1"></i>載入 Demo Data</button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-3">
           <h6 class="fw-bold mb-2"><i class="bi bi-trash3 me-1 text-danger"></i>清除所有資料</h6>
           <p class="text-muted small">清除所有員工及出勤紀錄，操作不可逆，請先備份！</p>
           <button class="btn btn-danger btn-sm" onclick="clearAllData()"><i class="bi bi-x-circle me-1"></i>清除全部資料</button>
@@ -934,6 +941,9 @@ const UI_TEXT_TRANSLATIONS = {
     '從備份的 JSON 檔案還原資料。': 'Restore data from a backup JSON file.',
     '注意：會覆蓋現有資料！': 'Warning: this overwrites current data.',
     '匯入 JSON': 'Import JSON',
+    '載入範例資料': 'Load Demo Data',
+    '載入一組 fictional demo data，方便公開展示、測試英文報表與薪資結算流程。': 'Load fictional demo data for public demos, English report testing, and payroll settlement walkthroughs.',
+    '載入 Demo Data': 'Load Demo Data',
     '清除所有資料': 'Clear All Data',
     '清除所有員工及出勤紀錄，操作不可逆，請先備份！': 'Clear all employee and attendance records. This cannot be undone. Back up first.',
     '清除全部資料': 'Clear All Data',
@@ -1175,7 +1185,9 @@ const UI_TEXT_TRANSLATIONS = {
     'JSON 解析失敗，請確認檔案完整': 'JSON parsing failed. Please check that the file is complete.',
     '⚠️ 確定清除所有資料？\n此操作不可復原，請先備份！': 'Clear all data?\nThis cannot be undone. Please back up first.',
     '再次確認：清除後所有員工、出勤紀錄將全部消失。確定嗎？': 'Confirm again: all employees and attendance records will be deleted. Continue?',
-    '已清除所有資料': 'All data has been cleared'
+    '已清除所有資料': 'All data has been cleared',
+    '載入範例資料會覆蓋目前瀏覽器資料。請先備份。是否繼續？': 'Loading demo data will overwrite current browser data. Back up first. Continue?',
+    '範例資料已載入，可到出勤紀錄、薪資結算與報表中心查看。': 'Demo data loaded. Review it in Attendance, Payroll, and Reports.'
   }
 };
 const WEEKDAY_TEXT_TRANSLATIONS = {
@@ -1799,6 +1811,80 @@ function saveData(data) {
 }
 function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function createDemoData() {
+  return normalizeData({
+    employees: [
+      {
+        id: 'demo-alex-lin',
+        name: 'Alex Lin',
+        type: 'monthly',
+        salary: 36000,
+        bonus: 1500,
+        labor: 950,
+        health: 620,
+        retirement: 2160,
+        other: 0,
+        start: '2025-09-01',
+        leaveAdj: 0,
+        disabilityLevel: 'none',
+        insuranceMode: 'manual',
+        active: true,
+        note: 'Fictional monthly employee for public demo.'
+      },
+      {
+        id: 'demo-mia-chen',
+        name: 'Mia Chen',
+        type: 'hourly',
+        salary: 190,
+        bonus: 0,
+        labor: 0,
+        health: 0,
+        retirement: 0,
+        other: 0,
+        start: '2026-02-15',
+        leaveAdj: 1,
+        disabilityLevel: 'none',
+        insuranceMode: 'manual',
+        active: true,
+        note: 'Fictional hourly employee for public demo.'
+      }
+    ],
+    attendance: [
+      { id: 'demo-att-001', empId: 'demo-alex-lin', date: '2026-04-01', checkIn: '08:00', checkOut: '17:00', dayType: 'normal', holidayMode: '', note: 'Demo full day' },
+      { id: 'demo-att-002', empId: 'demo-alex-lin', date: '2026-04-02', checkIn: '08:12', checkOut: '17:08', dayType: 'normal', holidayMode: '', note: 'Demo late arrival' },
+      { id: 'demo-att-003', empId: 'demo-alex-lin', date: '2026-04-04', checkIn: '09:00', checkOut: '18:30', dayType: 'saturday', holidayMode: '', note: 'Demo rest-day overtime' },
+      { id: 'demo-att-004', empId: 'demo-mia-chen', date: '2026-04-01', checkIn: '08:00', checkOut: '17:00', dayType: 'normal', holidayMode: '', note: 'Demo hourly full day' },
+      { id: 'demo-att-005', empId: 'demo-mia-chen', date: '2026-04-03', checkIn: '13:00', checkOut: '17:00', dayType: 'normal', holidayMode: '', note: 'Demo afternoon work with morning leave' }
+    ],
+    leaveRecs: [
+      { id: 'demo-leave-001', empId: 'demo-mia-chen', date: '2026-04-03', type: 'personal', days: 0, hours: 4, note: 'Fictional personal leave' }
+    ],
+    holidayOverrides: [
+      { id: 'demo-holiday-001', date: '2026-04-06', name: 'Demo company holiday', isHoliday: true }
+    ],
+    insuranceRates: [],
+    monthlyPayrollAdjustments: [
+      {
+        id: 'demo-payadj-001',
+        empId: 'demo-alex-lin',
+        month: '2026-04',
+        mealAllowance: 1200,
+        mealAllowanceNote: 'Demo meal allowance',
+        mealDeduction: 0,
+        mealDeductionNote: '',
+        otherExpense: 0,
+        otherExpenseNote: '',
+        yearEndBonus: 0,
+        specialAddition: 500,
+        specialAdditionNote: 'Demo performance bonus',
+        specialDeduction: 0,
+        specialDeductionNote: '',
+        note: 'Fictional data only'
+      }
+    ]
+  });
 }
 
 function getMonthKey(year, month) {
@@ -4438,6 +4524,27 @@ function importData(input) {
     input.value = '';
   };
   reader.readAsText(file);
+}
+
+function loadDemoData() {
+  if (!confirm('載入範例資料會覆蓋目前瀏覽器資料。請先備份。是否繼續？')) return;
+  saveData(createDemoData());
+  const demoMonth = '2026-04';
+  document.getElementById('attMonth').value = demoMonth;
+  document.getElementById('payMonth').value = demoMonth;
+  document.getElementById('reportMonth').value = demoMonth;
+  renderEmployees();
+  refreshEmpSelects();
+  renderAttendance();
+  renderInsuranceRates();
+  initLeaveYearFilter();
+  initHolidayYearFilter();
+  renderLeave();
+  renderHolidayOverrides();
+  renderReports();
+  calculatePayroll();
+  applyI18n();
+  alert('範例資料已載入，可到出勤紀錄、薪資結算與報表中心查看。');
 }
 
 function clearAllData() {

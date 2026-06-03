@@ -416,3 +416,18 @@ test('English locale localizes payroll, report, payslip, and workbook outputs', 
   assert.equal(Object.keys(workbook.sheets['Payroll Summary'][0]).includes('Employee'), true);
   assert.equal(Object.keys(workbook.sheets['Payroll Summary'][0]).some(key => /[\u4e00-\u9fff]/.test(key)), false);
 });
+
+test('demo data is fictional, English-friendly, and payroll-ready', () => {
+  const app = loadApp();
+  const demo = app.createDemoData();
+
+  assert.equal(Array.isArray(demo.employees), true);
+  assert.equal(demo.employees.length >= 2, true);
+  assert.equal(demo.attendance.length >= 4, true);
+  assert.equal(demo.leaveRecs.length >= 1, true);
+  assert.doesNotMatch(JSON.stringify(demo), /[\u4e00-\u9fff]/);
+
+  seedData(app, demo);
+  const payroll = app.calcMonthlyPayroll(demo.employees[0], 2026, 4);
+  assert.equal(payroll.totalNormalHours > 0, true);
+});

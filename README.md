@@ -25,6 +25,7 @@ This repository is not just one loose HTML file. The app is packaged as a portab
 - Monthly payroll settlement with all-employee payroll totals
 - Printable payslip and spreadsheet export
 - Local JSON backup and restore
+- Fictional demo data loader for safe public demos
 - Regression tests for payroll edge cases
 - Bilingual core UI and output: Traditional Chinese and English labels, common dynamic output, report HTML, printable payslip HTML, workbook headings, units, placeholders, and dialogs
 
