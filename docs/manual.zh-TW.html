@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出勤薪資管理系統 新手操作手冊 v1.7</title>
+<style>
+  :root {
+    --ink: #172033;
+    --muted: #52607a;
+    --line: #d8dee9;
+    --brand: #1757b7;
+    --brand-deep: #143d73;
+    --brand-soft: #eaf2ff;
+    --ok: #0f766e;
+    --warn: #9a3412;
+    --danger: #b42318;
+    --page: #ffffff;
+    --bg: #f4f7fb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+    line-height: 1.75;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 14mm;
+    background: var(--page);
+    padding: 16mm 16mm 18mm;
+    box-shadow: 0 10px 30px rgba(23, 32, 51, 0.08);
+  }
+  h1, h2, h3, h4 { margin: 0 0 8px; line-height: 1.35; }
+  h1 { font-size: 28px; color: var(--brand); }
+  h2 {
+    margin-top: 18px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--line);
+    font-size: 21px;
+    color: var(--brand);
+  }
+  h3 { margin-top: 14px; font-size: 17px; color: var(--brand-deep); }
+  h4 { margin-top: 12px; font-size: 15px; color: #25324d; }
+  p { margin: 8px 0; }
+  .lead { color: var(--muted); font-size: 15px; }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 14px 0 18px;
+  }
+  .meta .card, .callout, .case, .tipbox, .warnbox {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+  }
+  .meta .card { padding: 10px 12px; background: var(--brand-soft); }
+  .meta .label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 12px; }
+  .meta .value { font-weight: 700; font-size: 14px; }
+  .callout { margin: 12px 0; padding: 12px 14px; background: #fbfdff; }
+  .callout strong { color: var(--brand); }
+  .tipbox { margin: 10px 0; padding: 10px 12px; background: #f8fffd; }
+  .tipbox strong { color: var(--ok); }
+  .warnbox { margin: 10px 0; padding: 10px 12px; background: #fff7ed; }
+  .warnbox strong { color: var(--warn); }
+  .danger { color: var(--danger); font-weight: 700; }
+  .case { margin: 14px 0; overflow: hidden; }
+  .case .head {
+    background: var(--brand-soft);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 12px;
+    font-weight: 700;
+  }
+  .case .body { padding: 12px 14px; }
+  ol, ul { margin: 8px 0 8px 20px; }
+  li { margin: 4px 0; }
+  .steps {
+    margin: 10px 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .steps li {
+    position: relative;
+    margin: 10px 0;
+    padding-left: 40px;
+  }
+  .steps li::before {
+    content: counter(step);
+    counter-increment: step;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    text-align: center;
+    line-height: 26px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 8px 9px;
+    vertical-align: top;
+  }
+  th { background: #eef3fb; text-align: left; }
+  code {
+    font-family: Consolas, "Courier New", monospace;
+    background: #eef4ff;
+    border-radius: 4px;
+    padding: 1px 4px;
+  }
+  .formula {
+    margin: 8px 0;
+    padding: 9px 10px;
+    background: #f6f8fc;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: Consolas, "Courier New", monospace;
+    white-space: pre-wrap;
+  }
+  .footer {
+    margin-top: 26px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  @media print {
+    body { background: #fff; }
+    .page {
+      width: auto;
+      min-height: auto;
+      margin: 0;
+      box-shadow: none;
+      padding: 12mm 12mm 14mm;
+      page-break-after: always;
+    }
+    .page:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+  <section class="page">
+    <h1>出勤薪資管理系統 新手操作手冊</h1>
+    <p class="lead">這份手冊是寫給不熟悉電腦操作的人看的。請把它當成每日工作流程小抄：先照案例做，熟了以後再回頭看規則。</p>
+
+    <div class="meta">
+      <div class="card">
+        <span class="label">手冊版本</span>
+        <span class="value">v1.7</span>
+      </div>
+      <div class="card">
+        <span class="label">系統形式</span>
+        <span class="value">單一 HTML 離線檔</span>
+      </div>
+      <div class="card">
+        <span class="label">更新日期</span>
+        <span class="value">2026-04-29</span>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>先記住 6 件事：</strong>
+      <ol>
+        <li>資料存在目前這台電腦的瀏覽器內，請每月匯出 <code>JSON 備份</code>。</li>
+        <li>第一次建置前，請先載入 <code>2025</code> 或 <code>2026</code> 勞健保參考表。</li>
+        <li>平日 <code>08:00 ~ 17:00</code>，扣掉午休後正常工時是 <code>8 小時</code>。</li>
+        <li><code>事假</code>、<code>病假</code>、<code>生理假</code> 可以用 <code>分鐘</code> 輸入，會反映到出勤與薪資。</li>
+        <li>週六加班會把固定加給納入基礎，且 <code>08:00 前</code> 與 <code>17:00 ~ 18:00</code> 不計薪。</li>
+        <li>v1.7 修正午休部分重疊時誤扣整段午休的問題，例如 <code>12:02</code> 下班。</li>
+      </ol>
+    </div>
+
+    <div class="tipbox">
+      <strong>操作建議：</strong>每次月底發薪前，先看「出勤異常清單」，再進入薪資結算。這樣比較不容易漏掉未登出勤、請假扣薪或手動調整。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>一、系統能做什麼</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>功能頁</th>
+          <th>用途</th>
+          <th>常見使用時機</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>員工管理</td>
+          <td>建立員工、薪資、固定加給、勞健保來源、身心障礙等級與備註</td>
+          <td>新進人員、薪資異動、保險資料異動</td>
+        </tr>
+        <tr>
+          <td>出勤紀錄</td>
+          <td>輸入上下班打卡，自動計算遲到、早退、工時、加班費</td>
+          <td>每日或每週補登出勤</td>
+        </tr>
+        <tr>
+          <td>假勤管理</td>
+          <td>建立事假、病假、特休、補休使用、自訂國定假日</td>
+          <td>請假、補休、國定假日例外調整</td>
+        </tr>
+        <tr>
+          <td>薪資結算</td>
+          <td>計算當月薪資、手動調整伙食與其他費用、查看扣款來源</td>
+          <td>月底發薪前</td>
+        </tr>
+        <tr>
+          <td>報表中心</td>
+          <td>看薪資總表、異常清單、列印薪資單、匯出 Excel</td>
+          <td>發薪檢查、交會計、交主管確認</td>
+        </tr>
+        <tr>
+          <td>備份管理</td>
+          <td>匯出或匯入 JSON 備份</td>
+          <td>每月結算後、換電腦前</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="page">
+    <h2>二、第一次建置前先載入參考表</h2>
+    <div class="case">
+      <div class="head">情境</div>
+      <div class="body">你第一次打開系統，要先讓勞保、健保、勞退有參考級距，之後新增員工才可以自動帶入正確數值。</div>
+    </div>
+
+    <ol class="steps">
+      <li>打開 <code>出勤薪資管理系統.html</code>。</li>
+      <li>切到 <code>員工管理</code> 或勞健保參考表所在區塊。</li>
+      <li>如果要使用 2025 年級距，按 <code>載入 2025 參考表</code>。</li>
+      <li>如果要使用 2026 年級距，按 <code>載入 2026 參考表</code>。</li>
+      <li>確認參考表出現薪資下限、薪資上限、勞保、健保、勞退等欄位。</li>
+      <li>之後新增員工時，保險來源建議先選 <code>使用參考表</code>。</li>
+    </ol>
+
+    <div class="warnbox">
+      <strong>注意：</strong>如果政策改變，可以修改參考表；使用參考表的員工在月結時會依薪資級距自動帶入。若只有某位員工臨時不同，請不要改整張表，改用該員工的手動模式。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>三、案例 1：建立員工資料</h2>
+    <div class="case">
+      <div class="head">情境</div>
+      <div class="body">新進一位月薪員工，月薪 31000，固定加給 2000。你要建立資料，讓日後薪資、保險與加班費都能自動計算。</div>
+    </div>
+
+    <ol class="steps">
+      <li>切到 <code>員工管理</code>。</li>
+      <li>按 <code>新增員工</code>。</li>
+      <li>輸入姓名、薪資類型、月薪或時薪、到職日。</li>
+      <li>月薪欄輸入 <code>31000</code>。</li>
+      <li>固定加給欄輸入 <code>2000</code>。</li>
+      <li>勞健保扣款來源先選 <code>使用參考表</code>。</li>
+      <li>確認身心障礙等級，沒有就選 <code>無</code>。</li>
+      <li>按 <code>儲存</code>。</li>
+    </ol>
+
+    <div class="callout">
+      <strong>固定加給會影響什麼？</strong>
+      <p>固定加給會納入月薪員工的薪資結算，也會納入週六加班費與國定假日加發 1 日工資的計算基礎。</p>
+      <div class="formula">31000 + 2000 = 33000
+週六加班每分鐘基礎 = 33000 / 30 / 8 / 60</div>
+    </div>
+
+    <h3>臨時修改勞保 / 健保 / 勞退</h3>
+    <ol class="steps">
+      <li>打開員工編輯視窗。</li>
+      <li>如果目前保險來源是 <code>使用參考表</code>，欄位會灰階，這是正常保護機制。</li>
+      <li>按 <code>改用手動編輯目前數值</code>。</li>
+      <li>系統會先把目前參考表算出的數值帶入欄位。</li>
+      <li>欄位解鎖後，再手動修改勞保、健保或勞退。</li>
+      <li>按 <code>儲存</code>。</li>
+    </ol>
+  </section>
+
+  <section class="page">
+    <h2>四、案例 2：每天記錄上下班</h2>
+    <div class="case">
+      <div class="head">情境</div>
+      <div class="body">員工正常上班，早上 08:00 打卡，下午 17:00 下班。你要確認系統顯示為 8 小時。</div>
+    </div>
+
+    <ol class="steps">
+      <li>切到 <code>出勤紀錄</code>。</li>
+      <li>選擇正確月份。</li>
+      <li>按 <code>新增出勤紀錄</code>。</li>
+      <li>選員工與日期。</li>
+      <li>上班打卡輸入 <code>08:00</code>。</li>
+      <li>下班打卡輸入 <code>17:00</code>。</li>
+      <li>出勤類型選 <code>平日</code>。</li>
+      <li>檢查下方 <code>預覽計算結果</code>，正常工時應為 <code>8 小時</code>。</li>
+      <li>確認無誤後按 <code>儲存</code>。</li>
+    </ol>
+
+    <div class="tipbox">
+      <strong>為什麼不是 9 小時？</strong>
+      <p>因為 <code>12:00 ~ 13:00</code> 是午休，不計入工時，所以 <code>08:00 ~ 17:00</code> 正常工時為 <code>8 小時</code>。</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>五、案例 3：週六加班怎麼算</h2>
+    <div class="case">
+      <div class="head">情境 A</div>
+      <div class="body">月薪 31000，固定加給 2000，週六 08:00 到 17:00 上班。你要確認加班費是否以 33000 當基礎。</div>
+    </div>
+
+    <ol class="steps">
+      <li>切到 <code>出勤紀錄</code>。</li>
+      <li>按 <code>新增出勤紀錄</code>。</li>
+      <li>選員工與週六日期。</li>
+      <li>上班打卡輸入 <code>08:00</code>，下班打卡輸入 <code>17:00</code>。</li>
+      <li>出勤類型選 <code>休息日加班（週六）</code>。</li>
+      <li>確認預覽結果顯示週六加班 8 小時。</li>
+    </ol>
+
+    <div class="formula">計算基礎 = 31000 + 2000 = 33000
+前 2 小時：33000 / 30 / 8 / 60 * 1.34 * 120 = 368
+後 6 小時：33000 / 30 / 8 / 60 * 1.67 * 360 = 1378
+加班費合計 = 1746</div>
+
+    <div class="case">
+      <div class="head">情境 B</div>
+      <div class="body">月薪 30000，週六 07:48 上班、17:16 下班。提早到與 17:00 後 16 分鐘都不應多算。</div>
+    </div>
+
+    <div class="formula">08:00 前不計薪
+12:00 ~ 13:00 午休不計薪
+17:00 ~ 18:00 不計薪
+有效計薪工時 = 8 小時
+加班費四捨五入 = 1588</div>
+  </section>
+
+  <section class="page">
+    <h2>六、案例 4：事假分鐘與半日喪假</h2>
+    <div class="case">
+      <div class="head">情境</div>
+      <div class="body">員工上午請假、下午正常上班。你要讓請假分鐘抵扣上午缺勤，下午正常上班的分鐘仍正常給薪。</div>
+    </div>
+
+    <ol class="steps">
+      <li>切到 <code>假勤管理</code>。</li>
+      <li>按 <code>新增請假 / 補休使用</code>。</li>
+      <li>選員工與日期。</li>
+      <li>若是假別選 <code>事假</code>，使用分鐘數輸入 <code>240</code> 分鐘。</li>
+      <li>若是假別選 <code>喪假</code>，天數輸入 <code>0.5</code> 天，並填寫喪假級距與案件代號。</li>
+      <li>備註可寫，例如 <code>上午請假</code>。</li>
+      <li>按 <code>儲存</code>。</li>
+      <li>回到 <code>出勤紀錄</code>，新增同一天 <code>13:00 ~ 17:00</code> 的正常出勤。</li>
+      <li>預覽應顯示下午正常工時，不應把上午請假時段列為遲到扣薪。</li>
+      <li>月底到 <code>薪資結算</code>，確認事假扣薪或喪假不扣薪已被帶入。</li>
+    </ol>
+
+    <table>
+      <thead>
+        <tr>
+          <th>假別</th>
+          <th>輸入單位</th>
+          <th>扣薪方式</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>事假</td>
+          <td>分鐘</td>
+          <td>全額扣薪</td>
+        </tr>
+        <tr>
+          <td>病假</td>
+          <td>分鐘</td>
+          <td>半薪扣款</td>
+        </tr>
+        <tr>
+          <td>生理假</td>
+          <td>分鐘</td>
+          <td>比照病假半薪</td>
+        </tr>
+        <tr>
+          <td>補休使用</td>
+          <td>分鐘</td>
+          <td>不扣薪，扣補休餘額</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="page">
+    <h2>七、案例 5：國定假日加班選一日工資或補休</h2>
+    <div class="case">
+      <div class="head">情境</div>
+      <div class="body">員工在國定假日出勤。公司要依當次狀況決定加發 1 日工資，或改用補休 8 小時。</div>
+    </div>
+
+    <ol class="steps">
+      <li>切到 <code>出勤紀錄</code>。</li>
+      <li>按 <code>新增出勤紀錄</code>。</li>
+      <li>選員工、日期、上班時間、下班時間。</li>
+      <li>出勤類型選 <code>國定假日加班</code>。</li>
+      <li>在國定假日處理方式選擇 <code>加發 1 日工資</code> 或 <code>補休 8 小時</code>。</li>
+      <li>查看預覽結果。</li>
+      <li>確認後按 <code>儲存</code>。</li>
+    </ol>
+
+    <div class="callout">
+      <strong>怎麼選？</strong>
+      <p>如果公司要給錢，選 <code>加發 1 日工資</code>。如果公司與員工約定改給補休，選 <code>補休 8 小時</code>。兩者擇一，避免同一天同時多給薪又多給補休。</p>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>八、案例 6：月底輸入伙食、其他費用與薪資加減項</h2>
+    <div class="case">
+      <div class="head">情境</div>
+      <div class="body">月底結算時，某員工有伙食津貼 1500、伙食代墊 300、其他費用 200，另有一次性獎金 1000。你要把金額與品項寫清楚，讓薪資單看得懂。</div>
+    </div>
+
+    <ol class="steps">
+      <li>切到 <code>薪資結算</code>。</li>
+      <li>選月份後按 <code>計算薪資</code>。</li>
+      <li>先確認上方 <code>全體實發薪資總額</code>、應發合計與扣款合計是否合理。</li>
+      <li>找到該員工，進入月結調整欄位。</li>
+      <li><code>伙食津貼</code> 輸入 <code>1500</code>，備註填 <code>本月餐費補貼</code>。</li>
+      <li><code>伙食代墊</code> 輸入 <code>300</code>，備註填 <code>公司代墊午餐</code>。</li>
+      <li><code>其他費用</code> 輸入 <code>200</code>，備註填 <code>制服清潔費</code>。</li>
+      <li><code>薪資加項</code> 輸入 <code>1000</code>，備註填 <code>專案獎金</code>。</li>
+      <li>若有需扣回款項，可使用 <code>薪資減項</code> 並填寫備註。</li>
+      <li>儲存後重新確認薪資明細與薪資單。</li>
+    </ol>
+
+    <table>
+      <thead>
+        <tr>
+          <th>欄位</th>
+          <th>加減方向</th>
+          <th>範例備註</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>伙食津貼</td>
+          <td>加項</td>
+          <td>本月餐費補貼</td>
+        </tr>
+        <tr>
+          <td>伙食代墊</td>
+          <td>減項</td>
+          <td>公司代墊午餐</td>
+        </tr>
+        <tr>
+          <td>其他費用</td>
+          <td>減項</td>
+          <td>制服清潔費、宿舍代扣、代買用品</td>
+        </tr>
+        <tr>
+          <td>薪資加項</td>
+          <td>加項</td>
+          <td>獎金、補貼、差額補發</td>
+        </tr>
+        <tr>
+          <td>薪資減項</td>
+          <td>減項</td>
+          <td>借支扣回、調整扣款</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tipbox">
+      <strong>小提醒：</strong>品項備註會同步到薪資單、報表與 Excel 匯出，建議寫得像收據摘要一樣清楚，日後查帳會省很多時間。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>九、案例 7：正常上班日漏 KEY 警示</h2>
+    <div class="case">
+      <div class="head">情境</div>
+      <div class="body">某位在職員工某天是正常上班日，但操作人員忘記輸入出勤，也沒有請假紀錄。系統要在發薪前提醒。</div>
+    </div>
+
+    <ol class="steps">
+      <li>月底前切到 <code>報表中心</code>。</li>
+      <li>選擇要檢查的月份。</li>
+      <li>打開 <code>出勤異常清單</code>。</li>
+      <li>查看是否有「正常上班日未建立出勤或請假紀錄」類似警示。</li>
+      <li>若是真的漏登，回到 <code>出勤紀錄</code> 新增打卡資料。</li>
+      <li>若當天其實有請假，回到 <code>假勤管理</code> 補登請假。</li>
+      <li>修正後再次回到異常清單確認警示消失。</li>
+    </ol>
+
+    <div class="warnbox">
+      <strong>重要：</strong>漏 KEY 警示只是提醒，不會自動扣薪。一定要由使用者確認事實後，再決定補出勤或補請假。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>十、月底發薪前建議流程</h2>
+    <ol class="steps">
+      <li>先到 <code>報表中心</code> 看 <code>出勤異常清單</code>。</li>
+      <li>處理遲到、早退、請假、加班與漏 KEY 警示。</li>
+      <li>回到 <code>薪資結算</code>，選月份並按 <code>計算薪資</code>。</li>
+      <li>先看上方全體薪資總額，再逐一確認底薪、固定加給、加班費、請假扣薪。</li>
+      <li>確認勞保、健保、勞退來源是參考表或手動輸入。</li>
+      <li>如需當月調整，輸入伙食津貼、伙食代墊、其他費用、薪資加項或薪資減項。</li>
+      <li>每個手動金額盡量填寫品項備註。</li>
+      <li>確認薪資單格式與金額無誤。</li>
+      <li>匯出 `.xlsx` 或列印正式薪資單。</li>
+      <li>最後到 <code>備份管理</code> 匯出 JSON 備份。</li>
+    </ol>
+
+    <div class="callout">
+      <strong>月底檢查清單：</strong>
+      <ul>
+        <li>有沒有漏登正常上班日？</li>
+        <li>事假 / 病假是否用分鐘輸入？</li>
+        <li>週六加班是否以月薪 + 固定加給計算？</li>
+        <li>國定假日是給一日工資還是補休？</li>
+        <li>勞健保是參考表還是手動值？</li>
+        <li>伙食與其他費用是否有備註？</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>十一、報表、Excel 與薪資單</h2>
+    <h3>正式薪資單</h3>
+    <p>正式薪資單適合列印給員工或留存。它會顯示應發、應扣、保險來源、勞退提繳、請假扣薪、伙食與其他費用、品項備註與簽名欄。</p>
+
+    <h3>Excel 匯出</h3>
+    <p>`.xlsx` 匯出適合交給會計或主管覆核。匯出內容包含薪資總表、薪資單、出勤明細與異常清單。</p>
+
+    <h3>JSON 備份</h3>
+    <p>JSON 是系統完整資料備份。Excel 是報表，不等於完整備份。發薪後請務必再匯出一次 JSON。</p>
+
+    <div class="warnbox">
+      <strong>不要只留 Excel：</strong>如果以後要把資料匯回系統，請使用 JSON 備份；Excel 主要是查帳與列印用途。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>十二、常見問題</h2>
+    <h4>1. 為什麼勞保 / 健保沒有自動帶入？</h4>
+    <ul>
+      <li>請先確認已按 <code>載入 2025 參考表</code> 或 <code>載入 2026 參考表</code>。</li>
+      <li>請確認員工保險來源是 <code>使用參考表</code>。</li>
+      <li>請確認員工薪資落在參考表級距內。</li>
+    </ul>
+
+    <h4>2. 參考表模式欄位灰色不能改，怎麼辦？</h4>
+    <ul>
+      <li>按 <code>改用手動編輯目前數值</code>。</li>
+      <li>系統會先帶入目前參考值，再讓欄位可以手動修改。</li>
+    </ul>
+
+    <h4>3. 為什麼平日 08:00 ~ 17:00 是 8 小時？</h4>
+    <ul>
+      <li>因為中午 <code>12:00 ~ 13:00</code> 是休息時間。</li>
+      <li>9 小時打卡區間扣掉 1 小時午休，等於 <code>8 小時</code>。</li>
+    </ul>
+
+    <h4>4. 為什麼週六 07:48 ~ 17:16 只算 8 小時？</h4>
+    <ul>
+      <li><code>08:00 前</code> 提早到班不計薪。</li>
+      <li><code>17:00 ~ 18:00</code> 不計薪。</li>
+      <li>所以有效計薪時間仍為 <code>08:00 ~ 17:00</code> 扣午休後 <code>8 小時</code>。</li>
+    </ul>
+
+    <h4>5. 為什麼 12:02 下班是早退 240 分鐘？</h4>
+    <ul>
+      <li><code>12:00 ~ 13:00</code> 是午休，不算正常工時，也不算早退。</li>
+      <li><code>07:51 ~ 12:02</code> 的正常工時是 <code>08:00 ~ 12:00</code>，共 <code>4 小時</code>。</li>
+      <li>早退從下午應上班的 <code>13:00 ~ 17:00</code> 計算，共 <code>240 分鐘</code>。</li>
+    </ul>
+
+    <h4>6. 其他費用和薪資減項差在哪裡？</h4>
+    <ul>
+      <li><code>其他費用</code> 適合固定分類的代扣或代墊費用，例如制服、宿舍、代買用品。</li>
+      <li><code>薪資減項</code> 保留給彈性調整，例如借支扣回或特殊扣款。</li>
+    </ul>
+
+    <div class="footer">
+      本手冊針對目前版本 v1.7 的出勤薪資管理系統撰寫。建議與主程式、變更紀錄、軟體規格書與 JSON 備份一起保存，方便交接與查帳。
+    </div>
+  </section>
+</body>
+</html>
