@@ -47,6 +47,12 @@ Run calculation tests:
 node --test tests/payroll-calculation.test.js
 ```
 
+Run the privacy audit before pushing:
+
+```bash
+npm run privacy:audit
+```
+
 Check test file syntax:
 
 ```bash

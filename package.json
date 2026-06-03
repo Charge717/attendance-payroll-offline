@@ -5,7 +5,8 @@
   "description": "Offline-first attendance and Taiwan-focused payroll management tool.",
   "scripts": {
     "test": "node --test tests/payroll-calculation.test.js",
-    "check": "node --check tests/payroll-calculation.test.js"
+    "check": "node --check tests/payroll-calculation.test.js",
+    "privacy:audit": "node scripts/privacy-audit.js"
   },
   "keywords": [
     "attendance",
