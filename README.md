@@ -26,7 +26,7 @@ This repository is not just one loose HTML file. The app is packaged as a portab
 - Printable payslip and spreadsheet export
 - Local JSON backup and restore
 - Regression tests for payroll edge cases
-- Bilingual project direction: Traditional Chinese first, English support in progress
+- Bilingual core UI: Traditional Chinese and English labels, common dynamic output, units, placeholders, and dialogs
 
 ## Quick Start
 

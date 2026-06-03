@@ -337,3 +337,22 @@ test('core UI exposes Traditional Chinese and English locale labels', () => {
     'Core UI supports multiple languages, but payroll/legal calculation presets are Taiwan-focused by default.'
   );
 });
+
+test('English locale translates common static UI labels and payroll units', () => {
+  const app = loadApp();
+
+  assert.equal(app.translateLiteralText('員工資料一覽', 'en'), 'Employee Directory');
+  assert.equal(app.translateLiteralText('新增員工', 'en'), 'Add Employee');
+  assert.equal(app.translateLiteralText('薪資類型', 'en'), 'Pay Type');
+  assert.equal(app.translateLiteralText('勞健保參考表', 'en'), 'Labor and Health Insurance Reference Table');
+  assert.equal(app.translateLiteralText('預覽計算結果', 'en'), 'Calculation Preview');
+  assert.equal(app.translateLiteralText('請填寫上下班時間後自動顯示', 'en'), 'Enter check-in and check-out times to preview automatically');
+  assert.equal(app.translateLiteralText('300 元', 'en'), 'NT$300');
+  assert.equal(app.translateLiteralText('240 分鐘', 'en'), '240 min');
+  assert.equal(app.translateLiteralText('4 小時', 'en'), '4 h');
+  assert.equal(app.translateDialogText('請填寫員工姓名', 'en'), 'Please enter the employee name');
+  assert.equal(
+    app.translateDialogText('將載入 2026 官方參考表 10 筆，保留現有自訂列 2 筆。是否繼續？', 'en'),
+    'Load the 2026 official reference table with 10 rows and keep 2 custom rows. Continue?'
+  );
+});
