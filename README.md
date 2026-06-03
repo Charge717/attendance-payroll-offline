@@ -51,6 +51,7 @@ node --check tests/payroll-calculation.test.js
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 - English overview: [docs/README.en.md](docs/README.en.md)
 - Internationalization notes: [docs/i18n.md](docs/i18n.md)
+- GitHub publishing guide: [docs/github-publish.zh-TW.md](docs/github-publish.zh-TW.md)
 
 ## Privacy and Data
 
