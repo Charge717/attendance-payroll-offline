@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node --test tests/payroll-calculation.test.js",
     "check": "node --check tests/payroll-calculation.test.js",
+    "i18n:audit": "node scripts/i18n-audit.js",
     "privacy:audit": "node scripts/privacy-audit.js"
   },
   "keywords": [

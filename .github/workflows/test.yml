@@ -19,5 +19,11 @@ jobs:
       - name: Syntax check
         run: npm run check
 
+      - name: i18n audit
+        run: npm run i18n:audit
+
+      - name: Privacy audit
+        run: npm run privacy:audit
+
       - name: Run tests
         run: npm test

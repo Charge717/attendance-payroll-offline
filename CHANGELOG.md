@@ -10,6 +10,7 @@
 - 報表中心、薪資結算、列印薪資單與 `.xlsx` 工作簿資料新增英文輸出層，避免切換英文後輸出內容仍殘留中文欄位。
 - 備份頁新增 fictional Demo Data 載入功能，方便公開展示與審查者快速試用，不需提交真實員工資料。
 - 新增 `npm run privacy:audit`，推送前可掃描是否誤提交薪資匯出、備份 JSON、Excel 或 zip 等敏感資料。
+- 新增 `npm run i18n:audit` 並加入 GitHub Actions，檢查固定中文 UI 在英文語系下是否仍有未翻譯字串。
 - 測試新增核心語系標籤、常見 UI 字串、薪資單位、彈窗、薪資結算 HTML、報表 HTML、薪資單 HTML 與 workbook 欄位翻譯驗證。
 
 ## v1.7 - 2026-04-29

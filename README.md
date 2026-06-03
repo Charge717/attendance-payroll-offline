@@ -53,6 +53,12 @@ Run the privacy audit before pushing:
 npm run privacy:audit
 ```
 
+Run the i18n static UI audit:
+
+```bash
+npm run i18n:audit
+```
+
 Check test file syntax:
 
 ```bash
