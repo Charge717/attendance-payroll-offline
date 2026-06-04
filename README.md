@@ -12,19 +12,13 @@
 
 ---
 
-<!-- 建議在此放入 30 秒操作 GIF，用 ScreenToGif（免費）錄製後存到 docs/demo.gif -->
-<!-- ![操作演示](docs/demo.gif) -->
+![操作演示](docs/demo.gif)
 
 ## 📸 畫面預覽
 
-<!-- 請將截圖存至 docs/screenshots/ 後取消下方注解 -->
-<!--
-| 員工管理 | 薪資結算 | 假期紀錄 |
+| 員工管理 | 薪資結算 | 假勤管理 |
 |---------|---------|---------|
-| ![員工管理](docs/screenshots/employees.png) | ![薪資結算](docs/screenshots/payroll.png) | ![假期紀錄](docs/screenshots/leave.png) |
--->
-
-> 截圖即將上線。你可以先[下載 index.html](src/index.html) 直接在瀏覽器預覽。
+| ![員工管理](docs/screenshots/employees.png) | ![薪資結算](docs/screenshots/payroll.png) | ![假勤管理](docs/screenshots/leave.png) |
 
 ---
 
