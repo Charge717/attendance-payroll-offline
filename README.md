@@ -1,6 +1,6 @@
 # 出勤薪資管理系統 · Attendance Payroll Offline
 
-> 免費・免安裝・免伺服器 — 小公司的差勤薪資管理，開一個 HTML 就能用。  
+> 免費・免安裝・免伺服器 — 小公司的差勤薪資管理，開一個 HTML 就能用。
 > Free, zero-install, no server required — HR & payroll for small teams in a single HTML file.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
