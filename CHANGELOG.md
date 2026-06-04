@@ -1,5 +1,11 @@
 # 變更紀錄
 
+## Public Launch Updates - 2026-06-04
+- 新增 GitHub Pages 入口頁，公開 demo 可由 `https://charge717.github.io/attendance-payroll-offline/` 一鍵試用。
+- README 頂部新增 `Try the demo`、下載主程式與中英文手冊入口。
+- 新增 `docs/release-notes-v1.7.md`，作為 GitHub Release 說明。
+- 新增中英文公開推廣短文，方便分享給台灣小公司 / 人資 / 會計與 OSS / local-first 社群。
+
 ## Open Source Preparation - 2026-06-03
 - 建立 `attendance-payroll-offline` 乾淨版專案資料夾，將主程式改放於 `src/index.html`，避免以中文檔名作為公開專案入口。
 - 補上 MIT License、README、CONTRIBUTING、SECURITY、Code of Conduct、GitHub issue / pull request template 與 GitHub Actions 測試流程。

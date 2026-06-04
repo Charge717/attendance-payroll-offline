@@ -10,6 +10,19 @@
 [![Taiwan Labor Law](https://img.shields.io/badge/台灣勞基法-適用-red.svg)](#features)
 [![Version](https://img.shields.io/badge/version-v1.7-informational.svg)](CHANGELOG.md)
 
+<p align="center">
+  <a href="https://charge717.github.io/attendance-payroll-offline/"><strong>Try the demo</strong></a>
+  ·
+  <a href="src/index.html"><strong>Download the single HTML app</strong></a>
+  ·
+  <a href="docs/manual.zh-TW.html">中文手冊</a>
+  ·
+  <a href="docs/manual.en.md">English manual</a>
+</p>
+
+> Demo runs entirely in your browser. Use **備份管理 → 載入 Demo Data** to load fictional sample records safely.
+> The app never uploads employee or payroll data by default.
+
 ---
 
 ![操作演示](docs/demo.gif)
@@ -68,9 +81,10 @@
 
 ## 🚀 30 秒快速開始
 
-1. **下載主程式**：點擊 [`src/index.html`](src/index.html) → 右鍵 → 另存新檔
-2. **用瀏覽器打開**：雙擊下載的 `index.html`
-3. **開始使用**：不需要安裝任何東西 ✅
+1. **線上試用**：點擊 [Try the demo](https://charge717.github.io/attendance-payroll-offline/)
+2. **下載主程式**：點擊 [`src/index.html`](src/index.html) → 右鍵 → 另存新檔
+3. **用瀏覽器打開**：雙擊下載的 `index.html`
+4. **開始使用**：不需要安裝任何東西 ✅
 
 > 第一次使用？點上方「備份管理」分頁 → 點「載入 Demo Data」，5 秒內看到完整功能。
 
