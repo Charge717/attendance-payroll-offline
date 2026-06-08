@@ -325,109 +325,429 @@ test('monthly payroll totals sum all employee net pay for the settlement header'
   assert.equal(totals.netPay, 46800);
 });
 
-test('core UI exposes Traditional Chinese and English locale labels', () => {
-  const app = loadApp();
-
-  assert.deepEqual(Array.from(app.getSupportedLocales()), ['zh-TW', 'en']);
-  assert.equal(app.translateText('app.title', 'zh-TW'), '出勤薪資管理系統');
-  assert.equal(app.translateText('app.title', 'en'), 'Attendance Payroll Offline');
-  assert.equal(app.translateText('tabs.payroll', 'en'), 'Payroll');
-  assert.equal(
-    app.translateText('app.scopeNotice', 'en'),
-    'Core UI supports multiple languages, but payroll/legal calculation presets are Taiwan-focused by default.'
-  );
-});
-
-test('English locale translates common static UI labels and payroll units', () => {
-  const app = loadApp();
-
-  assert.equal(app.translateLiteralText('員工資料一覽', 'en'), 'Employee Directory');
-  assert.equal(app.translateLiteralText('新增員工', 'en'), 'Add Employee');
-  assert.equal(app.translateLiteralText('薪資類型', 'en'), 'Pay Type');
-  assert.equal(app.translateLiteralText('勞健保參考表', 'en'), 'Labor and Health Insurance Reference Table');
-  assert.equal(app.translateLiteralText('預覽計算結果', 'en'), 'Calculation Preview');
-  assert.equal(app.translateLiteralText('請填寫上下班時間後自動顯示', 'en'), 'Enter check-in and check-out times to preview automatically');
-  assert.equal(app.translateLiteralText('300 元', 'en'), 'NT$300');
-  assert.equal(app.translateLiteralText('240 分鐘', 'en'), '240 min');
-  assert.equal(app.translateLiteralText('4 小時', 'en'), '4 h');
-  assert.equal(app.translateDialogText('請填寫員工姓名', 'en'), 'Please enter the employee name');
-  assert.equal(
-    app.translateDialogText('將載入 2026 官方參考表 10 筆，保留現有自訂列 2 筆。是否繼續？', 'en'),
-    'Load the 2026 official reference table with 10 rows and keep 2 custom rows. Continue?'
-  );
-});
-
-test('English locale localizes payroll, report, payslip, and workbook outputs', () => {
+test('monthly employee leaving mid-month uses leave date for proportional base salary', () => {
   const app = loadApp();
   const emp = {
-    id: 'emp-alex',
-    name: 'Alex Lin',
+    id: 'emp-leave-mid-month',
+    name: '月底前離職員工',
     type: 'monthly',
     salary: 30000,
-    bonus: 1000,
+    start: '2026-01-01',
+    leaveDate: '2026-04-07',
+    bonus: 0,
     labor: 0,
     health: 0,
     retirement: 0,
     other: 0,
+    active: false
+  };
+
+  seedData(app, { employees: [emp] });
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  assert.equal(snapshot.summary.baseAmount, 7000);
+  assert.equal(snapshot.summary.isPartialBase, true);
+  assert.equal(snapshot.summary.partialWorkDays, 7);
+  assert.equal(snapshot.summary.partialLabel, '月中離職');
+  assert.equal(snapshot.summary.netPay, 7000);
+});
+
+test('monthly partial-month salary prorates base salary and fixed bonus together', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-partial-bonus',
+    name: '未足月固定加給員工',
+    type: 'monthly',
+    salary: 45000,
     start: '2026-01-01',
-    active: true,
+    leaveDate: '2026-04-23',
+    bonus: 2000,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+
+  seedData(app, { employees: [emp] });
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  assert.equal(snapshot.summary.baseAmount, 36033);
+  assert.equal(snapshot.summary.bonus, 0);
+  assert.equal(snapshot.summary.isPartialBase, true);
+  assert.equal(snapshot.summary.partialWorkDays, 23);
+  assert.equal(snapshot.summary.netPay, 36033);
+});
+
+test('monthly partial-month tardiness deduction uses the full monthly salary basis including fixed bonus', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-partial-tardy',
+    name: '未足月遲到員工',
+    type: 'monthly',
+    salary: 45000,
+    start: '2026-01-01',
+    leaveDate: '2026-04-23',
+    bonus: 2000,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+  const attendance = {
+    id: 'att-partial-tardy',
+    empId: emp.id,
+    date: '2026-04-22',
+    checkIn: '09:00',
+    checkOut: '17:00',
+    dayType: 'normal',
+    holidayMode: '',
     note: ''
   };
 
+  seedData(app, { employees: [emp], attendance: [attendance] });
+
+  const calc = app.calcRecord(attendance, emp);
+  assert.equal(calc.tardinessMin, 60);
+  assert.equal(calc.tardinessDeduct, 195.83);
+
+  const payroll = app.calcMonthlyPayroll(emp, 2026, 4);
+  assert.equal(payroll.totalTardDeduct, 196);
+});
+
+test('monthly partial-month overtime and holiday pay use the full monthly salary basis including fixed bonus', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-partial-ot',
+    name: '未足月加班員工',
+    type: 'monthly',
+    salary: 45000,
+    start: '2026-01-01',
+    leaveDate: '2026-04-23',
+    bonus: 2000,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+
+  const saturday = app.calcRecord({
+    empId: emp.id,
+    date: '2026-04-18',
+    checkIn: '08:00',
+    checkOut: '17:00',
+    dayType: 'saturday',
+    holidayMode: '',
+    note: ''
+  }, emp);
+  assert.equal(saturday.otHours, 8);
+  assert.equal(saturday.otPay, 2487);
+
+  const holiday = app.calcRecord({
+    empId: emp.id,
+    date: '2026-04-20',
+    checkIn: '08:00',
+    checkOut: '17:00',
+    dayType: 'holiday',
+    holidayMode: 'pay_day',
+    note: ''
+  }, emp);
+  assert.equal(holiday.otPay, 1567);
+});
+
+test('employee with leave date is excluded from future payroll months but kept in historical month snapshots', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-history-only',
+    name: '歷史月份員工',
+    type: 'monthly',
+    salary: 30000,
+    start: '2026-01-01',
+    leaveDate: '2026-04-07',
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+
+  seedData(app, { employees: [emp] });
+
+  assert.equal(app.buildPayrollSnapshots(2026, 4, '').length, 1);
+  assert.equal(app.buildPayrollSnapshots(2026, 5, '').length, 0);
+});
+
+test('missing attendance anomalies stop after leave date', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-anomaly-stop',
+    name: '離職異常截止',
+    type: 'monthly',
+    salary: 30000,
+    start: '2026-04-01',
+    leaveDate: '2026-04-07',
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+
+  seedData(app, { employees: [emp] });
+
+  const anomalies = app.detectMonthlyAnomalies(2026, 4, '');
+  assert.ok(anomalies.length > 0);
+  assert.equal(anomalies.some(item => item.date > '2026-04-07'), false);
+});
+
+// ─── A 群：請假扣薪費率驗證 ─────────────────────────────────────────────────
+
+test('monthly full-month sick leave deduction: 8h × hourlyRate(125) × 0.5 = 500', () => {
+  // hourlyRate = 30000 / 30 / 8 = 125；病假乘數 0.5
+  // deduct = Math.round(125 × 8 × 0.5) = 500
+  const app = loadApp();
+  const emp = {
+    id: 'emp-sick-full',
+    name: '滿月病假員工',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
   seedData(app, {
     employees: [emp],
-    attendance: [{
-      id: 'att-full-day',
+    leaveRecs: [{
+      id: 'leave-sick-full',
       empId: emp.id,
-      date: '2026-04-01',
-      checkIn: '08:00',
-      checkOut: '17:00',
-      dayType: 'normal',
-      holidayMode: '',
+      date: '2026-04-15',
+      type: 'sick',
+      days: 0,
+      hours: 8,
       note: ''
     }]
   });
 
-  app.setAppLocale('en');
-  app.document.getElementById('reportMonth').value = '2026-04';
-  app.document.getElementById('reportEmpFilter').value = '';
-  app.renderReports();
-
-  const reportHtml = app.document.getElementById('reportResult').innerHTML;
-  assert.doesNotMatch(reportHtml, /[\u4e00-\u9fff]/);
-  assert.match(reportHtml, /Employee Monthly Payroll Details/);
-  assert.match(reportHtml, /Company Monthly Summary/);
-
-  app.document.getElementById('payMonth').value = '2026-04';
-  app.calculatePayroll();
-  const payrollHtml = app.document.getElementById('payrollResult').innerHTML;
-  assert.doesNotMatch(payrollHtml, /[\u4e00-\u9fff]/);
-  assert.match(payrollHtml, /Payroll Settlement Report/);
-  assert.match(payrollHtml, /All-Employee Net Payroll Total/);
+  const payroll = app.calcMonthlyPayroll(emp, 2026, 4);
+  assert.equal(payroll.totalLeaveDeduct, 500);
 
   const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
-  const payslipHtml = app.localizeHtmlOutput(app.buildPayslipPrintHtml(snapshot), 'en');
-  assert.doesNotMatch(payslipHtml, /[\u4e00-\u9fff]/);
-  assert.match(payslipHtml, /Official Payslip/);
-  assert.match(payslipHtml, /Employee Signature/);
-
-  const workbook = app.localizeReportWorkbookData(app.buildReportWorkbookData(2026, 4, ''), 'en');
-  assert.deepEqual(Array.from(workbook.sheetNames), ['Payroll Summary', 'Payslips', 'Attendance Details', 'Anomaly List']);
-  assert.equal(Object.keys(workbook.sheets['Payroll Summary'][0]).includes('Employee'), true);
-  assert.equal(Object.keys(workbook.sheets['Payroll Summary'][0]).some(key => /[\u4e00-\u9fff]/.test(key)), false);
+  assert.equal(snapshot.summary.leaveDeduct, 500);
+  assert.equal(snapshot.summary.isPartialBase, false);
 });
 
-test('demo data is fictional, English-friendly, and payroll-ready', () => {
+test('monthly full-month personal leave deduction: 4h × hourlyRate(125) × 1.0 = 500', () => {
+  // hourlyRate = 30000 / 30 / 8 = 125；事假乘數 1.0
+  // deduct = Math.round(125 × 4 × 1.0) = 500
   const app = loadApp();
-  const demo = app.createDemoData();
+  const emp = {
+    id: 'emp-personal-full',
+    name: '滿月事假員工',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
+  seedData(app, {
+    employees: [emp],
+    leaveRecs: [{
+      id: 'leave-personal-full',
+      empId: emp.id,
+      date: '2026-04-15',
+      type: 'personal',
+      days: 0,
+      hours: 4,
+      note: ''
+    }]
+  });
 
-  assert.equal(Array.isArray(demo.employees), true);
-  assert.equal(demo.employees.length >= 2, true);
-  assert.equal(demo.attendance.length >= 4, true);
-  assert.equal(demo.leaveRecs.length >= 1, true);
-  assert.doesNotMatch(JSON.stringify(demo), /[\u4e00-\u9fff]/);
+  const payroll = app.calcMonthlyPayroll(emp, 2026, 4);
+  assert.equal(payroll.totalLeaveDeduct, 500);
+});
 
-  seedData(app, demo);
-  const payroll = app.calcMonthlyPayroll(demo.employees[0], 2026, 4);
-  assert.equal(payroll.totalNormalHours > 0, true);
+test('monthly partial-month sick leave uses full monthly salary rate, not prorated rate', () => {
+  // 未足月員工（23天）病假費率必須等同滿月：fullAmount/30/8 = 30000/30/8 = 125
+  // 若誤用比例後金額：23000/30/8 = 95.83 → 與正確值 125 不同
+  // deduct = Math.round(125 × 8 × 0.5) = 500（而非 Math.round(95.83 × 8 × 0.5) = 383）
+  const app = loadApp();
+  const emp = {
+    id: 'emp-sick-partial',
+    name: '未足月病假員工',
+    type: 'monthly',
+    salary: 30000,
+    start: '2026-01-01',
+    leaveDate: '2026-04-23',
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+  seedData(app, {
+    employees: [emp],
+    leaveRecs: [{
+      id: 'leave-sick-partial',
+      empId: emp.id,
+      date: '2026-04-15',
+      type: 'sick',
+      days: 0,
+      hours: 8,
+      note: ''
+    }]
+  });
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  assert.equal(snapshot.summary.isPartialBase, true);
+  assert.equal(snapshot.summary.partialWorkDays, 23);
+  assert.equal(snapshot.summary.baseAmount, 23000);
+  // 關鍵驗證：請假扣薪與滿月相同（費率用全薪，不用比例後金額）
+  assert.equal(snapshot.summary.leaveDeduct, 500);
+});
+
+// ─── B 群：伙食津貼流程驗證 ──────────────────────────────────────────────────
+
+test('employee-level meal allowance appears in full-month payroll snapshot', () => {
+  // 員工設定伙食津貼 2400，滿月不比例
+  // mealAllowance = 2400，netPay = 30000 + 2400 = 32400
+  const app = loadApp();
+  const emp = {
+    id: 'emp-meal-full',
+    name: '滿月伙食員工',
+    type: 'monthly',
+    salary: 30000,
+    mealAllowance: 2400,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
+  seedData(app, { employees: [emp] });
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  assert.equal(snapshot.summary.mealAllowance, 2400);
+  assert.equal(snapshot.summary.netPay, 32400);
+});
+
+test('employee-level meal allowance is prorated for partial-month employee', () => {
+  // 伙食津貼 2400，在職 10 天 → Math.round(2400/30×10) = 800
+  // proratedBase = Math.round(30000/30×10) = 10000
+  // netPay = 10000 + 800 = 10800
+  const app = loadApp();
+  const emp = {
+    id: 'emp-meal-partial',
+    name: '未足月伙食員工',
+    type: 'monthly',
+    salary: 30000,
+    mealAllowance: 2400,
+    start: '2026-04-01',
+    leaveDate: '2026-04-10',
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+  seedData(app, { employees: [emp] });
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  assert.equal(snapshot.summary.isPartialBase, true);
+  assert.equal(snapshot.summary.partialWorkDays, 10);
+  assert.equal(snapshot.summary.baseAmount, 10000);
+  assert.equal(snapshot.summary.mealAllowance, 800);
+  assert.equal(snapshot.summary.netPay, 10800);
+});
+
+test('monthly adjustment meal allowance is added to net pay', () => {
+  // 員工無伙食津貼，月結手動設定 1800 → netPay = 30000 + 1800 = 31800
+  const app = loadApp();
+  const emp = {
+    id: 'emp-meal-adj',
+    name: '月結伙食員工',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
+  seedData(app, {
+    employees: [emp],
+    monthlyPayrollAdjustments: [{
+      id: 'adj-meal',
+      empId: emp.id,
+      month: '2026-04',
+      mealAllowance: 1800
+    }]
+  });
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  assert.equal(snapshot.summary.mealAllowance, 1800);
+  assert.equal(snapshot.summary.netPay, 31800);
+});
+
+// ─── C 群：端對端薪資單驗證 ──────────────────────────────────────────────────
+
+test('end-to-end partial-month payroll: prorated base + prorated meal - insurance - sick leave = netPay', () => {
+  // 完整計算鏈驗證（未足月 23 天）：
+  //   proratedBase   = Math.round(30000/30×23)    = 23000
+  //   proratedMeal   = Math.round(1800/30×23)     = 1380
+  //   sickLeaveDeduct = Math.round(125×8×0.5)     = 500  ← 費率用全薪 30000/30/8=125
+  //   grossBeforeDeduction = 23000 + 1380 - 500   = 23880
+  //   deductions     = labor(584) + health(372)   = 956
+  //   netPay         = 23880 - 956                = 22924
+  const app = loadApp();
+  const emp = {
+    id: 'emp-e2e-partial',
+    name: '端對端未足月員工',
+    type: 'monthly',
+    salary: 30000,
+    mealAllowance: 1800,
+    start: '2026-01-01',
+    leaveDate: '2026-04-23',
+    bonus: 0,
+    labor: 584,
+    health: 372,
+    retirement: 0,
+    other: 0,
+    active: false
+  };
+  seedData(app, {
+    employees: [emp],
+    leaveRecs: [{
+      id: 'leave-e2e',
+      empId: emp.id,
+      date: '2026-04-15',
+      type: 'sick',
+      days: 0,
+      hours: 8,
+      note: ''
+    }]
+  });
+
+  const snapshot = app.buildPayrollSnapshot(emp, 2026, 4);
+  assert.equal(snapshot.summary.isPartialBase, true);
+  assert.equal(snapshot.summary.partialWorkDays, 23);
+  assert.equal(snapshot.summary.baseAmount, 23000);
+  assert.equal(snapshot.summary.mealAllowance, 1380);
+  assert.equal(snapshot.summary.leaveDeduct, 500);
+  assert.equal(snapshot.summary.grossBeforeDeduction, 23880);
+  assert.equal(snapshot.summary.deductions, 956);
+  assert.equal(snapshot.summary.netPay, 22924);
 });

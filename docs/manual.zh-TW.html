@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>出勤薪資管理系統 新手操作手冊 v1.7</title>
+<title>出勤薪資管理系統 新手操作手冊 v1.9</title>
 <style>
   :root {
     --ink: #172033;
@@ -161,7 +161,7 @@
     <div class="meta">
       <div class="card">
         <span class="label">手冊版本</span>
-        <span class="value">v1.7</span>
+        <span class="value">v1.9</span>
       </div>
       <div class="card">
         <span class="label">系統形式</span>
@@ -169,7 +169,7 @@
       </div>
       <div class="card">
         <span class="label">更新日期</span>
-        <span class="value">2026-04-29</span>
+        <span class="value">2026-05-05</span>
       </div>
     </div>
 
@@ -181,7 +181,7 @@
         <li>平日 <code>08:00 ~ 17:00</code>，扣掉午休後正常工時是 <code>8 小時</code>。</li>
         <li><code>事假</code>、<code>病假</code>、<code>生理假</code> 可以用 <code>分鐘</code> 輸入，會反映到出勤與薪資。</li>
         <li>週六加班會把固定加給納入基礎，且 <code>08:00 前</code> 與 <code>17:00 ~ 18:00</code> 不計薪。</li>
-        <li>v1.7 修正午休部分重疊時誤扣整段午休的問題，例如 <code>12:02</code> 下班。</li>
+        <li>v1.9 起，月薪員工未足月時會依 <code>(底薪 + 固定加給) ÷ 30 × 在職天數</code> 自動比例計算。</li>
       </ol>
     </div>
 
@@ -266,7 +266,7 @@
     <ol class="steps">
       <li>切到 <code>員工管理</code>。</li>
       <li>按 <code>新增員工</code>。</li>
-      <li>輸入姓名、薪資類型、月薪或時薪、到職日。</li>
+      <li>輸入姓名、薪資類型、月薪或時薪、到職日；若已知離職日，也可一併填入。</li>
       <li>月薪欄輸入 <code>31000</code>。</li>
       <li>固定加給欄輸入 <code>2000</code>。</li>
       <li>勞健保扣款來源先選 <code>使用參考表</code>。</li>
@@ -276,7 +276,7 @@
 
     <div class="callout">
       <strong>固定加給會影響什麼？</strong>
-      <p>固定加給會納入月薪員工的薪資結算，也會納入週六加班費與國定假日加發 1 日工資的計算基礎。</p>
+      <p>固定加給會納入月薪員工的月薪基數；未足月薪資、遲到早退扣薪、請假扣薪、週六加班費與國定假日加發 1 日工資，都會一起跟著這個基數計算。</p>
       <div class="formula">31000 + 2000 = 33000
 週六加班每分鐘基礎 = 33000 / 30 / 8 / 60</div>
     </div>
@@ -437,6 +437,7 @@
       <li>切到 <code>薪資結算</code>。</li>
       <li>選月份後按 <code>計算薪資</code>。</li>
       <li>先確認上方 <code>全體實發薪資總額</code>、應發合計與扣款合計是否合理。</li>
+      <li>若員工本月月中到職或離職，先確認卡片中的藍色提示框，核對未足月比例是否正確。</li>
       <li>找到該員工，進入月結調整欄位。</li>
       <li><code>伙食津貼</code> 輸入 <code>1500</code>，備註填 <code>本月餐費補貼</code>。</li>
       <li><code>伙食代墊</code> 輸入 <code>300</code>，備註填 <code>公司代墊午餐</code>。</li>
@@ -516,7 +517,7 @@
       <li>先到 <code>報表中心</code> 看 <code>出勤異常清單</code>。</li>
       <li>處理遲到、早退、請假、加班與漏 KEY 警示。</li>
       <li>回到 <code>薪資結算</code>，選月份並按 <code>計算薪資</code>。</li>
-      <li>先看上方全體薪資總額，再逐一確認底薪、固定加給、加班費、請假扣薪。</li>
+      <li>先看上方全體薪資總額，再逐一確認月薪基數、加班費、請假扣薪與保險扣款。</li>
       <li>確認勞保、健保、勞退來源是參考表或手動輸入。</li>
       <li>如需當月調整，輸入伙食津貼、伙食代墊、其他費用、薪資加項或薪資減項。</li>
       <li>每個手動金額盡量填寫品項備註。</li>
@@ -596,7 +597,7 @@
     </ul>
 
     <div class="footer">
-      本手冊針對目前版本 v1.7 的出勤薪資管理系統撰寫。建議與主程式、變更紀錄、軟體規格書與 JSON 備份一起保存，方便交接與查帳。
+      本手冊針對目前版本 v1.9 的出勤薪資管理系統撰寫。建議與主程式、變更紀錄、軟體規格書與 JSON 備份一起保存，方便交接與查帳。
     </div>
   </section>
 </body>

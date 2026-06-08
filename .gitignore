@@ -29,3 +29,7 @@ Thumbs.db
 
 # Keep public documentation PDFs, but avoid accidental local report dumps.
 !docs/*.pdf
+_archive/
+*.db
+*.sqlite
+*.sqlite3

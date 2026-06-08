@@ -1,6 +1,6 @@
 {
   "name": "attendance-payroll-offline",
-  "version": "1.7.0",
+  "version": "2.1.0",
   "private": false,
   "description": "Offline-first attendance and Taiwan-focused payroll management tool.",
   "scripts": {

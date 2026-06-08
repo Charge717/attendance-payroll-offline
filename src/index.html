@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attendance Payroll Offline v1.7</title>
+<title>出勤薪資管理系統 v2.1</title>
 <style id="bootstrap-offline">
 @charset "UTF-8";/*!
  * Bootstrap  v5.3.2 (https://getbootstrap.com/)
@@ -123,17 +123,11 @@
 <body>
 
 <!-- ===== NAVBAR ===== -->
-<nav class="navbar navbar-dark px-3 py-2 d-flex justify-content-between align-items-center gap-3">
-  <span class="navbar-brand"><i class="bi bi-calendar2-check me-2"></i><span data-i18n="app.title">出勤薪資管理系統</span></span>
+<nav class="navbar navbar-dark px-3 py-2 d-flex justify-content-between align-items-center">
+  <span class="navbar-brand"><i class="bi bi-calendar2-check me-2"></i>出勤薪資管理系統</span>
   <span class="text-white-50 small" id="todayDisplay"></span>
-  <span class="d-flex align-items-center gap-2">
-    <select class="form-select form-select-sm bg-transparent text-white border-light" id="appLocale" aria-label="Language" style="width:auto;">
-      <option value="zh-TW">繁中</option>
-      <option value="en">English</option>
-    </select>
-    <span class="text-white-50 small" style="font-size:0.78rem;letter-spacing:0.03em;">
-      <i class="bi bi-code-slash me-1" style="opacity:0.6"></i>Dev&nbsp;<strong class="text-white" style="opacity:0.85">v1.7</strong>
-    </span>
+  <span class="text-white-50 small" style="font-size:0.78rem;letter-spacing:0.03em;">
+    <i class="bi bi-code-slash me-1" style="opacity:0.6"></i>Dev&nbsp;<strong class="text-white" style="opacity:0.85">貓落去 v2.1</strong>
   </span>
 </nav>
 
@@ -142,22 +136,18 @@
   <!-- Tab Navigation -->
   <ul class="nav nav-tabs mb-3" id="mainTabs">
     <li class="nav-item"><a class="nav-link active" data-tab="employees" href="#">
-      <i class="bi bi-people me-1"></i><span data-i18n="tabs.employees">員工管理</span></a></li>
+      <i class="bi bi-people me-1"></i>員工管理</a></li>
     <li class="nav-item"><a class="nav-link" data-tab="attendance" href="#">
-      <i class="bi bi-clock me-1"></i><span data-i18n="tabs.attendance">出勤紀錄</span></a></li>
+      <i class="bi bi-clock me-1"></i>出勤紀錄</a></li>
     <li class="nav-item"><a class="nav-link" data-tab="leave" href="#">
-      <i class="bi bi-calendar3 me-1"></i><span data-i18n="tabs.leave">假勤管理</span></a></li>
+      <i class="bi bi-calendar3 me-1"></i>假勤管理</a></li>
     <li class="nav-item"><a class="nav-link" data-tab="payroll" href="#">
-      <i class="bi bi-cash-stack me-1"></i><span data-i18n="tabs.payroll">薪資結算</span></a></li>
+      <i class="bi bi-cash-stack me-1"></i>薪資結算</a></li>
     <li class="nav-item"><a class="nav-link" data-tab="reports" href="#">
-      <i class="bi bi-file-earmark-bar-graph me-1"></i><span data-i18n="tabs.reports">報表中心</span></a></li>
+      <i class="bi bi-file-earmark-bar-graph me-1"></i>報表中心</a></li>
     <li class="nav-item"><a class="nav-link" data-tab="backup" href="#">
-      <i class="bi bi-cloud-arrow-down me-1"></i><span data-i18n="tabs.backup">備份管理</span></a></li>
+      <i class="bi bi-cloud-arrow-down me-1"></i>備份管理</a></li>
   </ul>
-
-  <div class="alert alert-info py-2 small" role="status" data-i18n="app.scopeNotice">
-    核心介面支援多語系，但薪資 / 法規計算預設以台灣規則為主。
-  </div>
 
   <!-- ===== TAB 1: 員工管理 ===== -->
   <div class="tab-pane" id="tab-employees">
@@ -180,6 +170,7 @@
               <th>身障補助</th>
               <th>其他扣款</th>
               <th>到職日</th>
+              <th>離職日</th>
               <th>特休天數</th>
               <th>狀態</th>
               <th>操作</th>
@@ -506,13 +497,6 @@
       </div>
       <div class="col-md-4">
         <div class="card p-3">
-          <h6 class="fw-bold mb-2"><i class="bi bi-stars me-1 text-warning"></i>載入範例資料</h6>
-          <p class="text-muted small">載入一組 fictional demo data，方便公開展示、測試英文報表與薪資結算流程。</p>
-          <button class="btn btn-warning btn-sm" onclick="loadDemoData()"><i class="bi bi-stars me-1"></i>載入 Demo Data</button>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-3">
           <h6 class="fw-bold mb-2"><i class="bi bi-trash3 me-1 text-danger"></i>清除所有資料</h6>
           <p class="text-muted small">清除所有員工及出勤紀錄，操作不可逆，請先備份！</p>
           <button class="btn btn-danger btn-sm" onclick="clearAllData()"><i class="bi bi-x-circle me-1"></i>清除全部資料</button>
@@ -555,6 +539,10 @@
           <div class="col-md-6">
             <label class="form-label">到職日期</label>
             <input type="date" class="form-control" id="empStart">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">離職日期</label>
+            <input type="date" class="form-control" id="empLeaveDate">
           </div>
           <div class="col-md-4">
             <label class="form-label">勞保自付額（元/月）</label>
@@ -602,6 +590,10 @@
           <div class="col-md-6">
             <label class="form-label">固定加給（元/月）<small class="text-muted fw-normal ms-1">如堆高機、職務加給</small></label>
             <input type="number" class="form-control" id="empBonus" placeholder="例：2000" min="0" value="0">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">伙食津貼（元/月）<small class="text-muted fw-normal ms-1">未足月自動按比例計算</small></label>
+            <input type="number" class="form-control" id="empMealAllowance" placeholder="例：2400" min="0" value="0">
           </div>
           <div class="col-md-6">
             <label class="form-label">特休天數手動調整 <small class="text-muted fw-normal ms-1">（正數加假、負數減假）</small></label>
@@ -803,7 +795,6 @@ Function(atob(bootstrapBase64))();
 //  CONSTANTS
 // =============================================
 const STORAGE_KEY = 'attendance_mgmt_v2';
-const LOCALE_STORAGE_KEY = 'attendance_payroll_locale';
 const WORK_START   = 8 * 60;       // 480  = 08:00
 const WORK_END     = 17 * 60;      // 1020 = 17:00
 const LUNCH_START  = 12 * 60;      // 720  = 12:00
@@ -814,603 +805,6 @@ const OT_START     = 18 * 60;      // 1080 = 18:00
 const OT_RATE1     = 1.34;
 const OT_RATE2     = 1.67;
 const WEEK_NAMES   = ['日','一','二','三','四','五','六'];
-const APP_LOCALES = {
-  'zh-TW': {
-    'app.documentTitle': '出勤薪資管理系統 v1.7',
-    'app.title': '出勤薪資管理系統',
-    'app.scopeNotice': '核心介面支援多語系，但薪資 / 法規計算預設以台灣規則為主。',
-    'tabs.employees': '員工管理',
-    'tabs.attendance': '出勤紀錄',
-    'tabs.leave': '假勤管理',
-    'tabs.payroll': '薪資結算',
-    'tabs.reports': '報表中心',
-    'tabs.backup': '備份管理'
-  },
-  en: {
-    'app.documentTitle': 'Attendance Payroll Offline v1.7',
-    'app.title': 'Attendance Payroll Offline',
-    'app.scopeNotice': 'Core UI supports multiple languages, but payroll/legal calculation presets are Taiwan-focused by default.',
-    'tabs.employees': 'Employees',
-    'tabs.attendance': 'Attendance',
-    'tabs.leave': 'Leave',
-    'tabs.payroll': 'Payroll',
-    'tabs.reports': 'Reports',
-    'tabs.backup': 'Backup'
-  }
-};
-const UI_TEXT_TRANSLATIONS = {
-  en: {
-  '系統會依照參考表的生效日期與薪資級距，自動帶入勞保 / 健保與勞退提繳。':
-  'The system will automatically apply labor insurance, health insurance, and pension contribution values based on the reference table effective date and salary range.',
-  '目前使用員工個別設定的勞保 / 健保與勞退提繳。':
-  'Currently using employee-specific labor insurance, health insurance, and pension contribution values.',
-    '出勤薪資管理系統': 'Attendance Payroll Offline',
-    '繁中': 'Traditional Chinese',
-    '員工管理': 'Employees',
-    '出勤紀錄': 'Attendance',
-    '假勤管理': 'Leave',
-    '薪資結算': 'Payroll',
-    '報表中心': 'Reports',
-    '備份管理': 'Backup',
-    '核心介面支援多語系，但薪資 / 法規計算預設以台灣規則為主。': 'Core UI supports multiple languages, but payroll/legal calculation presets are Taiwan-focused by default.',
-    '員工資料一覽': 'Employee Directory',
-    '新增員工': 'Add Employee',
-    '姓名': 'Name',
-    '員工姓名': 'Employee Name',
-    '薪資類型': 'Pay Type',
-    '底薪 / 時薪': 'Base Salary / Hourly Wage',
-    '勞保': 'Labor Insurance',
-    '健保': 'Health Insurance',
-    '身障補助': 'Disability Subsidy',
-    '其他扣款': 'Other Deductions',
-    '到職日': 'Start Date',
-    '到職日期': 'Start Date',
-    '特休天數': 'Annual Leave Days',
-    '狀態': 'Status',
-    '操作': 'Actions',
-    '勞健保參考表': 'Labor and Health Insurance Reference Table',
-    '政策調整時改這裡即可全局套用': 'Update here when policy changes; it applies globally',
-    '生效日期': 'Effective Date',
-    '薪資下限': 'Salary Min',
-    '薪資上限': 'Salary Max',
-    '薪資級距': 'Salary Range',
-    '勞保自付': 'Labor Insurance',
-    '健保自付': 'Health Insurance',
-    '勞退提繳': 'Pension Contribution',
-    '備註': 'Notes',
-    '儲存參考列': 'Save Reference Row',
-    '載入 2025 參考表': 'Load 2025 Table',
-    '載入 2026 參考表': 'Load 2026 Table',
-    '清空': 'Clear',
-    '怎麼用：': 'How to use:',
-    '先按「載入 2026 參考表」，系統會自動建立薪資級距。之後只要員工選擇「使用參考表」，結算時就會依照「薪資落在哪個區間」自動帶入勞保 / 健保 / 勞退提繳。若政策調整，只要修改這張表，不用逐一改員工。': 'Click "Load 2026 Table" first to create salary ranges. When an employee uses the reference table, payroll settlement will apply labor insurance, health insurance, and pension contribution by salary range. If policy changes, update this table instead of editing employees one by one.',
-    '載入規則：': 'Import rule:',
-    '官方載入只會新增 / 更新官方列，會保留你自己新增的自訂列，不會整張覆蓋。': 'Official imports only add or update official rows. Custom rows are preserved and the table is not overwritten.',
-    '時薪欄請填每小時薪資；月薪欄請填每月底薪。勞保 / 健保請填員工自付額。點選「特休管理」可設定各人特休天數。': 'Enter hourly wage for hourly workers and monthly base salary for salaried workers. Labor and health insurance are employee-paid amounts. Use annual leave management to set each employee leave balance.',
-    '特別休假 & 假勤紀錄': 'Annual Leave and Leave Records',
-    '新增請假 / 補休使用': 'Add Leave / Use Comp Time',
-    '各員工特休餘額': 'Annual Leave Balances',
-    '年資': 'Tenure',
-    '法定': 'Statutory',
-    '手動調整': 'Manual Adj.',
-    '±天': '+/- Days',
-    '已使用': 'Used',
-    '天': 'Days',
-    '剩餘': 'Remaining',
-    '補休餘額': 'Comp Time Balance',
-    '小時': 'Hours',
-    '國定假期例外設定': 'Public Holiday Overrides',
-    '系統自動抓取 + 手動覆寫': 'Built-in detection + manual override',
-    '日期': 'Date',
-    '名稱': 'Name',
-    '套用結果': 'Applied Result',
-    '視為國定假日': 'Treat as Public Holiday',
-    '視為一般上班日': 'Treat as Regular Workday',
-    '儲存設定': 'Save Setting',
-    '系統會先抓內建國定假日；若遇到公司補假、補班日或政府臨時調整，可在這裡手動覆寫。設定為「一般上班日」時，連週六 / 週日也會改成一般平日處理。': 'The system checks built-in public holidays first. Use this override for company holidays, make-up workdays, or temporary government changes. When set to regular workday, even Saturday or Sunday is handled as a regular weekday.',
-    '假勤紀錄明細': 'Leave Record Details',
-    '全部員工': 'All Employees',
-    '員工': 'Employee',
-    '假別': 'Leave Type',
-    '天數/小時': 'Days / Hours',
-    '特休法定天數依年資自動計算（0.5年:3天、1年:7天、2年:10天…），可手動 ± 調整。補休從週日/國定假日出勤自動累積；若遇補班補假，可在上方手動覆寫假期判定。': 'Statutory annual leave is calculated by tenure and can be manually adjusted. Comp time is accumulated from Sunday or public-holiday attendance. Use holiday overrides for make-up workdays or company holidays.',
-    '選擇月份': 'Select Month',
-    '員工篩選': 'Employee Filter',
-    '全部': 'All',
-    '新增出勤紀錄': 'Add Attendance Record',
-    '星期': 'Weekday',
-    '類型': 'Type',
-    '上班': 'Check-in',
-    '下班': 'Check-out',
-    '遲到': 'Late',
-    '分鐘': 'Minutes',
-    '早退': 'Early Leave',
-    '正常工時': 'Regular Hours',
-    '加班': 'Overtime',
-    '加班費': 'Overtime Pay',
-    '系統自動依日期判定星期，週六選「休息日加班」，週日選「例假日加班」可手動覆蓋。': 'The system detects weekday by date. Saturday rest-day overtime and Sunday regular-day overtime can be selected manually.',
-    '結算月份': 'Settlement Month',
-    '計算薪資': 'Calculate Payroll',
-    '列印報表': 'Print Report',
-    '國定假日可自動標記，也可到「假勤管理」手動覆寫例外日期': 'Public holidays can be detected automatically or overridden in Leave Management.',
-    '報表月份': 'Report Month',
-    '產生報表': 'Generate Report',
-    '列印薪資單': 'Print Payslips',
-    '匯出 .xlsx': 'Export .xlsx',
-    '先看異常清單，再核對薪資明細，最後再列印與匯出': 'Review anomalies first, then payroll details, then print or export.',
-    '匯出備份': 'Export Backup',
-    '將所有員工資料與出勤紀錄存成 JSON 檔案，建議每月發薪後備份一次。': 'Save all employee and attendance records as a JSON file. Back up after monthly payroll.',
-    '匯出 JSON': 'Export JSON',
-    '匯入還原': 'Import / Restore',
-    '從備份的 JSON 檔案還原資料。': 'Restore data from a backup JSON file.',
-    '注意：會覆蓋現有資料！': 'Warning: this overwrites current data.',
-    '匯入 JSON': 'Import JSON',
-    '載入範例資料': 'Load Demo Data',
-    '載入一組 fictional demo data，方便公開展示、測試英文報表與薪資結算流程。': 'Load fictional demo data for public demos, English report testing, and payroll settlement walkthroughs.',
-    '載入 Demo Data': 'Load Demo Data',
-    '清除所有資料': 'Clear All Data',
-    '清除所有員工及出勤紀錄，操作不可逆，請先備份！': 'Clear all employee and attendance records. This cannot be undone. Back up first.',
-    '清除全部資料': 'Clear All Data',
-    '提示：': 'Tip:',
-    '資料存在瀏覽器內（localStorage），換電腦或清瀏覽器快取後資料會消失。建議固定每月匯出 JSON 備份檔存到電腦或雲端。': 'Data is stored in this browser localStorage. It disappears when switching computers or clearing browser data. Export a monthly JSON backup to your computer or cloud storage.',
-    '月薪制（一般員工）': 'Monthly Salary',
-    '時薪制（受刑人）': 'Hourly Wage',
-    '月薪金額（元）': 'Monthly Salary (NTD)',
-    '勞保自付額（元/月）': 'Labor Insurance (NTD/month)',
-    '健保自付額（元/月）': 'Health Insurance (NTD/month)',
-    '其他扣款（元/月）': 'Other Deductions (NTD/month)',
-    '勞退提繳（元/月）': 'Pension Contribution (NTD/month)',
-    '身心障礙等級': 'Disability Level',
-    '無': 'None',
-    '身心障礙輕度': 'Mild Disability',
-    '身心障礙中度': 'Moderate Disability',
-    '身心障礙重度': 'Severe Disability',
-    '身心障礙極重度': 'Profound Disability',
-    '勞健保扣款來源': 'Insurance Deduction Source',
-    '使用參考表': 'Use Reference Table',
-    '手動輸入': 'Manual Input',
-    '系統會依照參考表的生效日期與薪資級距，自動帶入勞保 / 健保扣款。': 'The system uses the reference table effective date and salary range to fill labor and health insurance deductions.',
-    '改用手動編輯目前數值': 'Switch to Manual Editing',
-    '固定加給（元/月）': 'Fixed Allowance (NTD/month)',
-    '如堆高機、職務加給': 'e.g. forklift or position allowance',
-    '特休天數手動調整': 'Manual Annual Leave Adjustment',
-    '（正數加假、負數減假）': '(positive adds leave, negative subtracts leave)',
-    '備註 / 特殊條件說明': 'Notes / Special Conditions',
-    '在職': 'Active',
-    '離職': 'Inactive',
-    '取消': 'Cancel',
-    '儲存': 'Save',
-    '新增假勤紀錄': 'Add Leave Record',
-    '特別休假（年假）': 'Annual Leave',
-    '事假（無薪）': 'Personal Leave (Unpaid)',
-    '病假': 'Sick Leave',
-    '生理假': 'Menstrual Leave',
-    '喪假': 'Bereavement Leave',
-    '補休使用': 'Use Comp Time',
-    '其他假別': 'Other Leave',
-    '天數': 'Days',
-    '喪假級距': 'Bereavement Tier',
-    '8 天｜父母、養父母、繼父母、配偶': '8 days | Parents, adoptive parents, stepparents, spouse',
-    '6 天｜祖父母、子女、配偶父母': '6 days | Grandparents, children, spouse parents',
-    '3 天｜曾祖父母、兄弟姊妹、配偶祖父母': '3 days | Great-grandparents, siblings, spouse grandparents',
-    '喪假案件代號': 'Bereavement Case ID',
-    '若同一案件分多筆輸入，請使用相同案件代號，系統會依 3 / 6 / 8 天級距累計並提示是否超額。': 'Use the same case ID when splitting one bereavement case into multiple records. The system totals usage by the 3 / 6 / 8 day tier and warns about overuse.',
-    '上班打卡': 'Check-in Time',
-    '下班打卡': 'Check-out Time',
-    '出勤類型': 'Attendance Type',
-    '平日（週一 ~ 週五）': 'Weekday (Mon ~ Fri)',
-    '休息日加班（週六）': 'Rest-Day Overtime (Sat)',
-    '例假日加班（週日）': 'Regular-Day Overtime (Sun)',
-    '國定假日加班': 'Public-Holiday Overtime',
-    '國定假日處理方式': 'Public-Holiday Handling',
-    '加發 1 日工資': 'Pay 1 Additional Day',
-    '補休 8 小時': 'Grant 8 h Comp Time',
-    '國定假日可依公司作法選擇：加發 1 日工資，或改為補休 8 小時。': 'Choose the company policy for public holidays: pay 1 additional day or grant 8 hours of comp time.',
-    '備註（如：請假原因、補課說明）': 'Notes (leave reason, make-up explanation)',
-    '預覽計算結果': 'Calculation Preview',
-    '請填寫上下班時間後自動顯示': 'Enter check-in and check-out times to preview automatically',
-    '月薪': 'Monthly',
-    '時薪': 'Hourly',
-    '月薪制': 'Monthly Salary',
-    '時薪制': 'Hourly Wage',
-    '編輯': 'Edit',
-    '刪除': 'Delete',
-    '特休管理': 'Annual Leave',
-    '一般上班日': 'Regular Workday',
-    '平日': 'Weekday',
-    '休息日加班': 'Rest-Day Overtime',
-    '例假日加班': 'Regular-Day Overtime',
-    '國定假日': 'Public Holiday',
-    '系統內建國定假日': 'Built-in Public Holiday',
-    '自訂國定假日': 'Custom Public Holiday',
-    '自訂一般上班日': 'Custom Regular Workday',
-    '未套用參考表': 'Reference Table Not Applied',
-    '底薪': 'Base Salary',
-    '工時薪資': 'Hourly Pay',
-    '固定加給': 'Fixed Allowance',
-    '伙食津貼': 'Meal Allowance',
-    '伙食代墊': 'Meal Advance',
-    '年終獎金': 'Year-end Bonus',
-    '薪資加項': 'Payroll Addition',
-    '薪資減項': 'Payroll Deduction',
-    '其他費用': 'Other Expense',
-    '遲到扣薪': 'Late Deduction',
-    '早退扣薪': 'Early Leave Deduction',
-    '請假扣薪': 'Leave Deduction',
-    '應發合計': 'Gross Total',
-    '扣款合計': 'Deduction Total',
-    '實發薪資': 'Net Pay',
-    '全體實發薪資總額': 'All-Employee Net Payroll Total',
-    '結算員工數': 'Settled Employees',
-    '報表員工數': 'Report Employees',
-    '出勤摘要': 'Attendance Summary',
-    '薪資明細': 'Payroll Details',
-    '正式薪資單': 'Official Payslip',
-    '異常筆數': 'Anomaly Count',
-    '員工簽收': 'Employee Signature',
-    '製表 / 會計': 'Prepared By / Accounting',
-    '主管覆核': 'Manager Review',
-    '扣薪': 'Deduction',
-    '補休': 'Comp Time',
-    '本月無統計資料': 'No statistics for this month',
-    '本月無總表資料': 'No summary data for this month',
-    '合計': 'Total',
-    '目前沒有可編輯月結項目的在職員工。': 'No active employees are available for monthly adjustment editing.',
-    '請先選擇報表月份，再編輯月結手動項目。': 'Select a report month before editing monthly adjustments.',
-    '尚無在職員工資料': 'No active employee records',
-    '尚無員工資料，請點選「新增員工」': 'No employee records yet. Click "Add Employee".',
-    '本月無出勤紀錄': 'No attendance records this month',
-    '此年度尚未設定任何假期例外': 'No holiday overrides for this year',
-    '尚未建立勞健保參考表': 'No insurance reference table yet',
-    '尚無在職員工': 'No active employees',
-    '本年度無假勤紀錄': 'No leave records this year',
-    '月結手動項目': 'Monthly Adjustments',
-    '儲存本月項目': 'Save Monthly Items',
-    '月結欄位可處理制度外特例。可輸入伙食津貼、伙食代墊、其他費用，也保留薪資加項與薪資減項供彈性調整；各項均可填品項備註。': 'Monthly fields handle exceptions outside standard rules. You can enter meal allowance, meal advance, other expense, payroll additions, payroll deductions, and item notes.',
-    '品項備註': 'Item Note',
-    '勞保覆寫': 'Labor Override',
-    '健保覆寫': 'Health Override',
-    '勞退覆寫': 'Pension Override',
-    '其他扣款覆寫': 'Other Deduction Override',
-    '報表員工數': 'Report Employees',
-    '異常筆數': 'Anomaly Count',
-    '加班費合計': 'Total Overtime Pay',
-    '實發合計': 'Total Net Pay',
-    '員工月薪資明細': 'Employee Monthly Payroll Details',
-    '底薪/工時薪資': 'Base / Hourly Pay',
-    '月結加項': 'Monthly Additions',
-    '月結扣項': 'Monthly Deductions',
-    '保險/其他扣款': 'Insurance / Other Deductions',
-    '實發': 'Net',
-    '月中到職': 'Mid-month Start',
-    '本月無薪資資料': 'No payroll data this month',
-    '公司月總表': 'Company Monthly Summary',
-    '月份': 'Month',
-    '出勤天數': 'Attendance Days',
-    '請假天數': 'Leave Days',
-    '遲到分鐘': 'Late Minutes',
-    '早退分鐘': 'Early Leave Minutes',
-    '加班時數': 'Overtime Hours',
-    '出勤異常清單': 'Attendance Anomaly List',
-    '等級': 'Level',
-    '說明': 'Description',
-    '本月未發現異常': 'No anomalies found this month',
-    '正常上班日沒有出勤或請假資料，請確認是否漏 KEY': 'Regular workday has no attendance or leave record. Check whether a punch record is missing.',
-    '員工月統計': 'Employee Monthly Statistics',
-    '補休累積': 'Comp Time Earned',
-    '正常工時合計': 'Total Regular Hours',
-    '遲到分鐘合計': 'Total Late Minutes',
-    '加班小時合計': 'Total Overtime Hours',
-    '正式薪資單': 'Official Payslip',
-    '薪資編號': 'Payslip No.',
-    '薪資月份': 'Payroll Month',
-    '列印時間': 'Print Time',
-    '員工姓名': 'Employee Name',
-    '請假摘要': 'Leave Summary',
-    '應發項目': 'Earnings',
-    '扣款項目': 'Deductions',
-    '底薪工資': 'Base Pay',
-    '勞保原始自付': 'Original Labor Insurance',
-    '健保原始自付': 'Original Health Insurance',
-    '身障補助勞保減免': 'Labor Insurance Disability Subsidy',
-    '身障補助健保減免': 'Health Insurance Disability Subsidy',
-    '身障等級': 'Disability Level',
-    '月結保險覆寫': 'Monthly Insurance Override',
-    '保險來源': 'Insurance Source',
-    '參考表': 'Reference Table',
-    '手動': 'Manual',
-    '是': 'Yes',
-    '套用參考表': 'Reference Table Applied',
-    '月結保險覆寫': 'Monthly Insurance Override',
-    '已依 HR 當月調整值顯示勞保 / 健保 / 勞退 / 其他扣款': 'Displayed with HR monthly overrides for labor insurance, health insurance, pension, and other deductions',
-    '已依 HR 月結資料調整': 'Adjusted by HR monthly data',
-    '保險來源': 'Insurance Source',
-    '手動輸入': 'Manual Input',
-    '勞保減': 'Labor reduced',
-    '健保減': 'Health reduced',
-    '勞保扣款': 'Labor Insurance Deduction',
-    '健保扣款': 'Health Insurance Deduction',
-    '補休累計（本月）': 'Comp Time Earned This Month',
-    '本月項目備註': 'Monthly Item Notes',
-    '應發合計（稅前）': 'Gross Total Before Tax',
-    '查看逐日明細': 'View Daily Details',
-    '逐日明細': 'Daily Details',
-    '遲到(分)': 'Late (min)',
-    '早退(分)': 'Early Leave (min)',
-    '加班時數': 'Overtime Hours',
-    '出勤明細': 'Attendance Details',
-    '薪資總表': 'Payroll Summary',
-    '薪資單': 'Payslips',
-    '異常清單': 'Anomaly List',
-    '暫無資料': 'No data',
-    '出勤薪資報表': 'attendance-payroll-report',
-    '本日補休': 'Comp time today',
-    '國定假日：本次採「加發 1 日工資」': 'Public holiday: this record uses "Pay 1 Additional Day"',
-    '國定假日：本次採「補休 8 小時」': 'Public holiday: this record uses "Grant 8 h Comp Time"',
-    '不另給補休': 'no extra comp time',
-    '不另計 1 日工資': 'no extra 1-day pay',
-    '金額': 'Amount',
-    '薪資結算報表': 'Payroll Settlement Report',
-    '出勤': 'Attendance',
-    '人': 'people',
-    '上午': 'AM',
-    '下午': 'PM',
-    '例：2026 新制': 'e.g. 2026 policy',
-    '留空表示以上': 'Leave blank for and above',
-    '例：公司補假 / 補班日': 'e.g. company holiday / make-up workday',
-    '例：30000': 'e.g. 30000',
-    '例：1134': 'e.g. 1134',
-    '例：749': 'e.g. 749',
-    '例：福利金': 'e.g. welfare fund',
-    '例：1800': 'e.g. 1800',
-    '例：2000': 'e.g. 2000',
-    '例：2 或 -1': 'e.g. 2 or -1',
-    '例：堆高機加給2000、眷屬兩位健保從薪資加價': 'e.g. forklift allowance 2000, two dependents for health insurance',
-    '例：2026-父喪': 'e.g. 2026-parent-bereavement',
-    '選填': 'Optional',
-    '請先選擇報表月份': 'Please select a report month first',
-    '請填寫員工姓名': 'Please enter the employee name',
-    '請填寫薪資金額': 'Please enter the salary amount',
-    '確定刪除此員工？相關出勤紀錄將一併刪除。': 'Delete this employee? Related attendance records will also be deleted.',
-    '請填寫員工、日期及上下班時間': 'Please enter employee, date, check-in, and check-out times',
-    '下班時間必須晚於上班時間': 'Check-out time must be later than check-in time',
-    '確定刪除此出勤紀錄？': 'Delete this attendance record?',
-    '請先選擇例外日期': 'Please select an override date first',
-    '確定刪除此假期例外設定？': 'Delete this holiday override?',
-    '請填寫生效日期與薪資下限': 'Please enter effective date and salary minimum',
-    '確定刪除此勞健保參考列？': 'Delete this insurance reference row?',
-    '請填寫員工、日期及天數/分鐘': 'Please enter employee, date, and days/minutes',
-    '確定刪除此假勤紀錄？': 'Delete this leave record?',
-    '本月沒有可列印的薪資資料': 'There is no printable payroll data for this month',
-    'Excel 匯出元件尚未載入完成，請確認網路連線後再試一次': 'The Excel export component is not ready yet. Check the connection and try again.',
-    '請選擇結算月份': 'Please select a settlement month',
-    '檔案格式不正確，請選擇正確的備份 JSON 檔案': 'Invalid file format. Please choose a valid backup JSON file.',
-    '匯入成功！': 'Import completed.',
-    'JSON 解析失敗，請確認檔案完整': 'JSON parsing failed. Please check that the file is complete.',
-    '⚠️ 確定清除所有資料？\n此操作不可復原，請先備份！': 'Clear all data?\nThis cannot be undone. Please back up first.',
-    '再次確認：清除後所有員工、出勤紀錄將全部消失。確定嗎？': 'Confirm again: all employees and attendance records will be deleted. Continue?',
-    '已清除所有資料': 'All data has been cleared',
-    '載入範例資料會覆蓋目前瀏覽器資料。請先備份。是否繼續？': 'Loading demo data will overwrite current browser data. Back up first. Continue?',
-    '範例資料已載入，可到出勤紀錄、薪資結算與報表中心查看。': 'Demo data loaded. Review it in Attendance, Payroll, and Reports.'
-    
-  }
-};
-const WEEKDAY_TEXT_TRANSLATIONS = {
-  en: { '日': 'Sun', '一': 'Mon', '二': 'Tue', '三': 'Wed', '四': 'Thu', '五': 'Fri', '六': 'Sat' }
-};
-const I18N_ATTRS = ['placeholder', 'title', 'aria-label'];
-const i18nTextNodeSources = new WeakMap();
-let i18nObserver = null;
-let i18nObserverTimer = null;
-let isApplyingI18n = false;
-
-function getSupportedLocales() {
-  return Object.keys(APP_LOCALES);
-}
-
-function normalizeLocale(locale) {
-  return getSupportedLocales().includes(locale) ? locale : 'zh-TW';
-}
-
-function getAppLocale() {
-  try {
-    return normalizeLocale(localStorage.getItem(LOCALE_STORAGE_KEY) || 'zh-TW');
-  } catch (err) {
-    return 'zh-TW';
-  }
-}
-
-function translateText(key, locale = getAppLocale()) {
-  const normalized = normalizeLocale(locale);
-  return APP_LOCALES[normalized][key] || APP_LOCALES['zh-TW'][key] || key;
-}
-
-function translatePatternText(value, locale) {
-  if (normalizeLocale(locale) !== 'en') return value;
-  const weekdays = WEEKDAY_TEXT_TRANSLATIONS.en;
-  return String(value)
-    .replace(/(\d{4})\s*年\s*(\d{1,2})\s*月/g, (_, year, month) => `${year}-${String(month).padStart(2, '0')}`)
-    .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*元/g, 'NT$$$1')
-    .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*分鐘/g, '$1 min')
-    .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*小時/g, '$1 h')
-    .replace(/([+−-]?\d[\d,]*(?:\.\d+)?)\s*天/g, '$1 days')
-    .replace(/(\d+)\s*人/g, '$1 people')
-    .replace(/(\d+)\s*筆/g, '$1 rows')
-    .replace(/週([日一二三四五六])/g, (_, day) => weekdays[day] || day);
-}
-
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function localizeTextContent(value, locale = getAppLocale()) {
-  const normalized = normalizeLocale(locale);
-  if (normalized === 'zh-TW') return String(value);
-  const dictionary = UI_TEXT_TRANSLATIONS[normalized] || {};
-  let output = String(value);
-  Object.keys(dictionary)
-    .filter(key => key.length > 1 || ['無', '是'].includes(key))
-    .sort((a, b) => b.length - a.length)
-    .forEach(key => {
-      output = output.replace(new RegExp(escapeRegExp(key), 'g'), dictionary[key]);
-    });
-  return translatePatternText(output, normalized);
-}
-
-function translateLiteralText(value, locale = getAppLocale()) {
-  const normalized = normalizeLocale(locale);
-  if (normalized === 'zh-TW') return value;
-  const source = String(value);
-  const trimmed = source.trim();
-  if (!trimmed) return value;
-  const dictionary = UI_TEXT_TRANSLATIONS[normalized] || {};
-  const translated = dictionary[trimmed] || translatePatternText(trimmed, normalized);
-  if (translated === trimmed) return value;
-  return source.replace(trimmed, translated);
-}
-
-function localizeHtmlOutput(html, locale = getAppLocale()) {
-  return normalizeLocale(locale) === 'zh-TW' ? String(html) : localizeTextContent(html, locale);
-}
-
-function localizeWorkbookValue(value, locale = getAppLocale()) {
-  return typeof value === 'string' ? localizeTextContent(value, locale) : value;
-}
-
-function localizeReportWorkbookData(workbookData, locale = getAppLocale()) {
-  const normalized = normalizeLocale(locale);
-  if (normalized === 'zh-TW') return workbookData;
-  const sheets = {};
-  const sheetNames = workbookData.sheetNames.map(name => localizeTextContent(name, normalized).slice(0, 31));
-  workbookData.sheetNames.forEach((sourceName, index) => {
-    const targetName = sheetNames[index];
-    sheets[targetName] = (workbookData.sheets[sourceName] || []).map(row => {
-      const nextRow = {};
-      Object.entries(row).forEach(([key, value]) => {
-        nextRow[localizeTextContent(key, normalized)] = localizeWorkbookValue(value, normalized);
-      });
-      return nextRow;
-    });
-  });
-  return { sheetNames, sheets };
-}
-
-function translateDialogText(message, locale = getAppLocale()) {
-  const normalized = normalizeLocale(locale);
-  const source = String(message);
-  if (normalized === 'en') {
-    const dynamic = source
-      .replace(/^將載入 (\d{4}) 官方參考表 (\d+) 筆，保留現有自訂列 (\d+) 筆。是否繼續？$/, 'Load the $1 official reference table with $2 rows and keep $3 custom rows. Continue?')
-      .replace(/^確定匯入？將覆蓋現有資料（(\d+) 名員工，(\d+) 筆出勤，(\d+) 筆假勤）$/, 'Import and overwrite current data? This includes $1 employees, $2 attendance records, and $3 leave records.');
-    if (dynamic !== source) return dynamic;
-  }
-  const literal = translateLiteralText(source, normalized);
-  if (literal !== source || normalized !== 'en') return literal;
-  return source;
-}
-
-function shouldTranslateTextNode(node) {
-  const parent = node && (node.parentElement || node.parentNode);
-  if (!parent || !node.nodeValue || !node.nodeValue.trim()) return false;
-  const tagName = parent.tagName;
-  if (['SCRIPT', 'STYLE', 'TEXTAREA'].includes(tagName)) return false;
-  if (parent.closest && parent.closest('[data-no-i18n]')) return false;
-  return true;
-}
-
-function translateTextNodes(root, locale) {
-  if (!root || !document.createTreeWalker) return;
-  const nodeFilter = typeof NodeFilter !== 'undefined' ? NodeFilter : { SHOW_TEXT: 4, FILTER_ACCEPT: 1, FILTER_REJECT: 2 };
-  const walker = document.createTreeWalker(root, nodeFilter.SHOW_TEXT, {
-    acceptNode(node) {
-      return shouldTranslateTextNode(node) ? nodeFilter.FILTER_ACCEPT : nodeFilter.FILTER_REJECT;
-    }
-  });
-  let node = walker.nextNode();
-  while (node) {
-    if (!i18nTextNodeSources.has(node)) i18nTextNodeSources.set(node, node.nodeValue);
-    const source = i18nTextNodeSources.get(node);
-    const nextValue = translateLiteralText(source, locale);
-    if (node.nodeValue !== nextValue) node.nodeValue = nextValue;
-    node = walker.nextNode();
-  }
-}
-
-function translateElementAttributes(root, locale) {
-  if (!root || !root.querySelectorAll) return;
-  const selector = I18N_ATTRS.map(attr => `[${attr}]`).join(',');
-  root.querySelectorAll(selector).forEach(el => {
-    el.__i18nOriginalAttrs = el.__i18nOriginalAttrs || {};
-    I18N_ATTRS.forEach(attr => {
-      if (!el.hasAttribute || !el.hasAttribute(attr)) return;
-      if (!(attr in el.__i18nOriginalAttrs)) el.__i18nOriginalAttrs[attr] = el.getAttribute(attr);
-      const nextValue = translateLiteralText(el.__i18nOriginalAttrs[attr], locale);
-      if (el.getAttribute(attr) !== nextValue) el.setAttribute(attr, nextValue);
-    });
-  });
-}
-
-function translateStaticUi(locale) {
-  if (!document.body) return;
-  translateTextNodes(document.body, locale);
-  translateElementAttributes(document, locale);
-}
-
-function applyI18n(locale = getAppLocale()) {
-  const normalized = normalizeLocale(locale);
-  isApplyingI18n = true;
-  try {
-    if (document.documentElement) document.documentElement.lang = normalized;
-    document.title = translateText('app.documentTitle', normalized);
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      el.textContent = translateText(el.dataset.i18n, normalized);
-    });
-    translateStaticUi(normalized);
-    const localeSelect = document.getElementById('appLocale');
-    if (localeSelect) localeSelect.value = normalized;
-  } finally {
-    isApplyingI18n = false;
-  }
-}
-
-function setAppLocale(locale) {
-  const normalized = normalizeLocale(locale);
-  try {
-    localStorage.setItem(LOCALE_STORAGE_KEY, normalized);
-  } catch (err) {
-    // Keep the UI usable even when localStorage is unavailable.
-  }
-  applyI18n(normalized);
-}
-
-function installI18nDialogs() {
-  if (typeof window === 'undefined' || window.__attendancePayrollI18nDialogs) return;
-  const nativeAlert = window.alert ? window.alert.bind(window) : null;
-  const nativeConfirm = window.confirm ? window.confirm.bind(window) : null;
-  if (nativeAlert) {
-    window.alert = message => nativeAlert(translateDialogText(message, getAppLocale()));
-  }
-  if (nativeConfirm) {
-    window.confirm = message => nativeConfirm(translateDialogText(message, getAppLocale()));
-  }
-  window.__attendancePayrollI18nDialogs = true;
-}
-
-function startI18nObserver() {
-  if (i18nObserver || typeof MutationObserver === 'undefined' || !document.body) return;
-  i18nObserver = new MutationObserver(() => {
-    if (isApplyingI18n || getAppLocale() === 'zh-TW') return;
-    clearTimeout(i18nObserverTimer);
-    i18nObserverTimer = setTimeout(() => applyI18n(getAppLocale()), 0);
-  });
-  i18nObserver.observe(document.body, {
-    childList: true,
-    subtree: true,
-    characterData: true,
-    attributes: true,
-    attributeFilter: I18N_ATTRS
-  });
-}
 
 // =============================================
 //  TAIWAN PUBLIC HOLIDAYS
@@ -1447,7 +841,13 @@ function createEmptyData() {
 function normalizeData(data) {
   const safe = data || {};
   return {
-    employees: Array.isArray(safe.employees) ? safe.employees : [],
+    employees: Array.isArray(safe.employees)
+      ? safe.employees.map(emp => ({
+          ...emp,
+          leaveDate: emp.leaveDate || '',
+          active: emp.active !== false
+        }))
+      : [],
     attendance: Array.isArray(safe.attendance) ? safe.attendance : [],
     leaveRecs: Array.isArray(safe.leaveRecs) ? safe.leaveRecs : [],
     holidayOverrides: Array.isArray(safe.holidayOverrides) ? safe.holidayOverrides : [],
@@ -1818,87 +1218,63 @@ function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-function createDemoData() {
-  return normalizeData({
-    employees: [
-      {
-        id: 'demo-alex-lin',
-        name: 'Alex Lin',
-        type: 'monthly',
-        salary: 36000,
-        bonus: 1500,
-        labor: 950,
-        health: 620,
-        retirement: 2160,
-        other: 0,
-        start: '2025-09-01',
-        leaveAdj: 0,
-        disabilityLevel: 'none',
-        insuranceMode: 'manual',
-        active: true,
-        note: 'Fictional monthly employee for public demo.'
-      },
-      {
-        id: 'demo-mia-chen',
-        name: 'Mia Chen',
-        type: 'hourly',
-        salary: 190,
-        bonus: 0,
-        labor: 0,
-        health: 0,
-        retirement: 0,
-        other: 0,
-        start: '2026-02-15',
-        leaveAdj: 1,
-        disabilityLevel: 'none',
-        insuranceMode: 'manual',
-        active: true,
-        note: 'Fictional hourly employee for public demo.'
-      }
-    ],
-    attendance: [
-      { id: 'demo-att-001', empId: 'demo-alex-lin', date: '2026-04-01', checkIn: '08:00', checkOut: '17:00', dayType: 'normal', holidayMode: '', note: 'Demo full day' },
-      { id: 'demo-att-002', empId: 'demo-alex-lin', date: '2026-04-02', checkIn: '08:12', checkOut: '17:08', dayType: 'normal', holidayMode: '', note: 'Demo late arrival' },
-      { id: 'demo-att-003', empId: 'demo-alex-lin', date: '2026-04-04', checkIn: '09:00', checkOut: '18:30', dayType: 'saturday', holidayMode: '', note: 'Demo rest-day overtime' },
-      { id: 'demo-att-004', empId: 'demo-mia-chen', date: '2026-04-01', checkIn: '08:00', checkOut: '17:00', dayType: 'normal', holidayMode: '', note: 'Demo hourly full day' },
-      { id: 'demo-att-005', empId: 'demo-mia-chen', date: '2026-04-03', checkIn: '13:00', checkOut: '17:00', dayType: 'normal', holidayMode: '', note: 'Demo afternoon work with morning leave' }
-    ],
-    leaveRecs: [
-      { id: 'demo-leave-001', empId: 'demo-mia-chen', date: '2026-04-03', type: 'personal', days: 0, hours: 4, note: 'Fictional personal leave' }
-    ],
-    holidayOverrides: [
-      { id: 'demo-holiday-001', date: '2026-04-06', name: 'Demo company holiday', isHoliday: true }
-    ],
-    insuranceRates: [],
-    monthlyPayrollAdjustments: [
-      {
-        id: 'demo-payadj-001',
-        empId: 'demo-alex-lin',
-        month: '2026-04',
-        mealAllowance: 1200,
-        mealAllowanceNote: 'Demo meal allowance',
-        mealDeduction: 0,
-        mealDeductionNote: '',
-        otherExpense: 0,
-        otherExpenseNote: '',
-        yearEndBonus: 0,
-        specialAddition: 500,
-        specialAdditionNote: 'Demo performance bonus',
-        specialDeduction: 0,
-        specialDeductionNote: '',
-        note: 'Fictional data only'
-      }
-    ]
-  });
-}
-
 function getMonthKey(year, month) {
   return `${year}-${String(month).padStart(2, '0')}`;
 }
 
+function getMonthBounds(year, month) {
+  const monthStart = `${year}-${String(month).padStart(2, '0')}-01`;
+  const monthEnd = `${year}-${String(month).padStart(2, '0')}-${String(new Date(year, month, 0).getDate()).padStart(2, '0')}`;
+  return { monthStart, monthEnd };
+}
+
+function diffDaysInclusive(startStr, endStr) {
+  const startDate = new Date(startStr + 'T00:00:00');
+  const endDate = new Date(endStr + 'T00:00:00');
+  return Math.floor((endDate - startDate) / 86400000) + 1;
+}
+
+function getEmploymentSpanInMonth(emp, year, month) {
+  const { monthStart, monthEnd } = getMonthBounds(year, month);
+  if (emp.active === false && !emp.leaveDate) return null;
+  if (emp.start && emp.start > monthEnd) return null;
+  if (emp.leaveDate && emp.leaveDate < monthStart) return null;
+
+  const startDate = emp.start && emp.start > monthStart ? emp.start : monthStart;
+  const endDate = emp.leaveDate && emp.leaveDate < monthEnd ? emp.leaveDate : monthEnd;
+  if (startDate > endDate) return null;
+
+  return {
+    startDate,
+    endDate,
+    workDays: diffDaysInclusive(startDate, endDate),
+    isPartialStart: startDate !== monthStart,
+    isPartialEnd: endDate !== monthEnd
+  };
+}
+
+function getEmployeesForMonth(year, month) {
+  return getEmployees(false).filter(emp => !!getEmploymentSpanInMonth(emp, year, month));
+}
+
 function getReportFilteredEmployees() {
+  const monthVal = document.getElementById('reportMonth')?.value || '';
+  if (!monthVal) return [];
+  const [year, month] = monthVal.split('-').map(Number);
   const empIdFilter = document.getElementById('reportEmpFilter')?.value || '';
-  return getEmployees(true).filter(emp => !empIdFilter || emp.id === empIdFilter);
+  return getEmployeesForMonth(year, month).filter(emp => !empIdFilter || emp.id === empIdFilter);
+}
+
+function refreshReportEmployeeFilter() {
+  const reportFilter = document.getElementById('reportEmpFilter');
+  const monthVal = document.getElementById('reportMonth')?.value || '';
+  if (!reportFilter || !monthVal) return;
+
+  const [year, month] = monthVal.split('-').map(Number);
+  const currentValue = reportFilter.value || '';
+  const emps = getEmployeesForMonth(year, month);
+  reportFilter.innerHTML = '<option value="">全部</option>' + emps.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+  reportFilter.value = emps.some(e => e.id === currentValue) ? currentValue : '';
 }
 
 function getMonthlyPayrollAdjustment(empId, year, month) {
@@ -1958,17 +1334,17 @@ function renderMonthlyAdjustmentEditor() {
 
   const monthVal = document.getElementById('reportMonth')?.value || '';
   if (!monthVal) {
-    panel.innerHTML = localizeHtmlOutput('<div class="alert alert-light border mb-0">請先選擇報表月份，再編輯月結手動項目。</div>');
+    panel.innerHTML = '<div class="alert alert-light border mb-0">請先選擇報表月份，再編輯月結手動項目。</div>';
     return;
   }
 
   const emps = getReportFilteredEmployees();
   if (!emps.length) {
-    panel.innerHTML = localizeHtmlOutput('<div class="alert alert-light border mb-0">目前沒有可編輯月結項目的在職員工。</div>');
+    panel.innerHTML = '<div class="alert alert-light border mb-0">本月沒有可編輯月結項目的員工。</div>';
     return;
   }
 
-  panel.innerHTML = localizeHtmlOutput(`
+  panel.innerHTML = `
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="bi bi-sliders me-1"></i>月結手動項目</span>
@@ -2016,7 +1392,7 @@ function renderMonthlyAdjustmentEditor() {
           </table>
         </div>
       </div>
-    </div>`);
+    </div>`;
 }
 
 function saveVisibleMonthlyAdjustments() {
@@ -2103,6 +1479,7 @@ function saveEmployee() {
   const type    = document.getElementById('empType').value;
   const salary  = parseFloat(document.getElementById('empSalary').value) || 0;
   const start   = document.getElementById('empStart').value;
+  const leaveDate = document.getElementById('empLeaveDate').value;
   const labor   = parseFloat(document.getElementById('empLabor').value) || 0;
   const health  = parseFloat(document.getElementById('empHealth').value) || 0;
   const retirement = parseFloat(document.getElementById('empRetirement').value) || 0;
@@ -2110,20 +1487,22 @@ function saveEmployee() {
   const disabilityLevel = document.getElementById('empDisabilityLevel').value;
   const insuranceMode = document.getElementById('empInsuranceMode').value;
   const note    = document.getElementById('empNote').value.trim();
-  const active  = document.getElementById('empActive').value === '1';
+  const active  = leaveDate ? false : document.getElementById('empActive').value === '1';
 
   const bonus    = parseFloat(document.getElementById('empBonus').value) || 0;
+  const mealAllowance = parseFloat(document.getElementById('empMealAllowance').value) || 0;
   const leaveAdj = parseFloat(document.getElementById('empLeaveAdj').value) || 0;
 
   if (!name) { alert('請填寫員工姓名'); return; }
   if (salary <= 0) { alert('請填寫薪資金額'); return; }
+  if (start && leaveDate && leaveDate < start) { alert('離職日期不可早於到職日期'); return; }
 
   const d = getData();
   if (id) {
     const idx = d.employees.findIndex(e => e.id === id);
-    if (idx > -1) d.employees[idx] = { id, name, type, salary, start, labor, health, retirement, other, disabilityLevel, insuranceMode, bonus, leaveAdj, note, active };
+    if (idx > -1) d.employees[idx] = { id, name, type, salary, start, leaveDate, labor, health, retirement, other, disabilityLevel, insuranceMode, bonus, mealAllowance, leaveAdj, note, active };
   } else {
-    d.employees.push({ id: genId(), name, type, salary, start, labor, health, retirement, other, disabilityLevel, insuranceMode, bonus, leaveAdj, note, active });
+    d.employees.push({ id: genId(), name, type, salary, start, leaveDate, labor, health, retirement, other, disabilityLevel, insuranceMode, bonus, mealAllowance, leaveAdj, note, active });
   }
   saveData(d);
   bootstrap.Modal.getInstance(document.getElementById('empModal')).hide();
@@ -2231,8 +1610,76 @@ function getLunchDeductionMinutes(startMin, endMin) {
   return Math.max(0, Math.min(endMin, LUNCH_END) - Math.max(startMin, LUNCH_START));
 }
 
-function getHourlyRate(emp) {
-  return emp.type === 'hourly' ? emp.salary : ((emp.salary || 0) + (emp.bonus || 0)) / 30 / 8;
+function getYearMonthFromDate(dateStr) {
+  if (!dateStr) return { year: 0, month: 0 };
+  const [year, month] = dateStr.split('-').map(Number);
+  return { year, month };
+}
+
+function getFullMonthlySalary(emp) {
+  return (emp.salary || 0) + (emp.bonus || 0);
+}
+
+function getMonthlySalaryBasis(emp, year, month) {
+  if (emp.type !== 'monthly') {
+    return {
+      amount: 0,
+      fullAmount: 0,
+      isPartial: false,
+      workDays: 0,
+      reasonLabel: '',
+      startDate: '',
+      endDate: '',
+      dayRate: 0,
+      hourlyRate: 0,
+      minuteRate: 0
+    };
+  }
+
+  const fullAmount = getFullMonthlySalary(emp);
+  const span = getEmploymentSpanInMonth(emp, year, month);
+  if (!span) {
+    return {
+      amount: fullAmount,
+      fullAmount,
+      isPartial: false,
+      workDays: 0,
+      reasonLabel: '',
+      startDate: '',
+      endDate: '',
+      dayRate: fullAmount / 30,
+      hourlyRate: fullAmount / 30 / 8,
+      minuteRate: fullAmount / 30 / 8 / 60
+    };
+  }
+
+  const isPartial = span.isPartialStart || span.isPartialEnd;
+  let reasonLabel = '';
+  if (span.isPartialStart && span.isPartialEnd) reasonLabel = '同月到職離職';
+  else if (span.isPartialStart) reasonLabel = '月中到職';
+  else if (span.isPartialEnd) reasonLabel = '月中離職';
+
+  const amount = isPartial ? Math.round(fullAmount / 30 * span.workDays) : fullAmount;
+  return {
+    amount,
+    fullAmount,
+    isPartial,
+    workDays: isPartial ? span.workDays : 0,
+    reasonLabel,
+    startDate: span.startDate,
+    endDate: span.endDate,
+    dayRate: fullAmount / 30,
+    hourlyRate: fullAmount / 30 / 8,
+    minuteRate: fullAmount / 30 / 8 / 60
+  };
+}
+
+function getHourlyRate(emp, year, month) {
+  return emp.type === 'hourly' ? emp.salary : getMonthlySalaryBasis(emp, year, month).hourlyRate;
+}
+
+function getDayRate(emp, year, month) {
+  return emp.type === 'hourly' ? getHourlyRate(emp, year, month) * 8 : getMonthlySalaryBasis(emp, year, month).dayRate;
 }
 
 function getWorkedMinutes(cIn, cOut) {
@@ -2258,7 +1705,8 @@ function getHolidayMode(rec) {
 }
 
 function calcRecord(rec, emp) {
-  const hr  = getHourlyRate(emp);
+  const { year, month } = getYearMonthFromDate(rec.date);
+  const hr  = getHourlyRate(emp, year, month);
   const pmr = hr / 60;  // per-minute rate
 
   const cIn  = toMin(rec.checkIn);
@@ -2266,7 +1714,7 @@ function calcRecord(rec, emp) {
   const dt   = rec.dayType;
 
   if (dt === 'sunday') {
-    const dayRate = emp.type === 'hourly' ? hr * 8 : ((emp.salary || 0) + (emp.bonus || 0)) / 30;
+    const dayRate = getDayRate(emp, year, month);
     return {
       tardinessMin:  0,
       earlyLeaveMin: 0,
@@ -2282,7 +1730,7 @@ function calcRecord(rec, emp) {
 
   if (dt === 'holiday') {
     const holidayMode = getHolidayMode(rec);
-    const dayRate = emp.type === 'hourly' ? hr * 8 : ((emp.salary || 0) + (emp.bonus || 0)) / 30;
+    const dayRate = getDayRate(emp, year, month);
     return {
       tardinessMin: 0,
       earlyLeaveMin: 0,
@@ -2417,7 +1865,8 @@ function calcMonthlyPayroll(emp, year, month) {
     return { rec, impact };
   });
 
-  const base = emp.type === 'monthly' ? emp.salary : 0;
+  const monthlyBasis = getMonthlySalaryBasis(emp, year, month);
+  const base = emp.type === 'monthly' ? monthlyBasis.amount : 0;
   const hourlyPay = emp.type === 'hourly'
     ? Math.round(totalNormalHours * emp.salary)
     : 0;
@@ -2452,7 +1901,7 @@ function renderEmployees() {
   const emps = getEmployees(false);
   const tbody = document.getElementById('empTbody');
   if (!emps.length) {
-    tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted py-4">尚無員工資料，請點選「新增員工」</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" class="text-center text-muted py-4">尚無員工資料，請點選「新增員工」</td></tr>';
     return;
   }
   tbody.innerHTML = emps.map(e => {
@@ -2472,6 +1921,7 @@ function renderEmployees() {
       <td>${formatDisabilitySupport(e.disabilityLevel)}</td>
       <td>${(e.other||0).toLocaleString()}</td>
       <td>${e.start || '—'}</td>
+      <td>${e.leaveDate || '—'}</td>
       <td><span class="badge bg-info bg-opacity-75 text-dark">${quota} 天</span></td>
       <td><span class="badge ${e.active ? 'bg-success' : 'bg-secondary'}">${e.active ? '在職' : '離職'}</span></td>
       <td>
@@ -2488,6 +1938,7 @@ function openEmployeeModal(id) {
   document.getElementById('empType').value = 'monthly';
   document.getElementById('empSalary').value = '';
   document.getElementById('empStart').value = '';
+  document.getElementById('empLeaveDate').value = '';
   document.getElementById('empLabor').value = 0;
   document.getElementById('empHealth').value = 0;
   document.getElementById('empRetirement').value = 0;
@@ -2495,6 +1946,7 @@ function openEmployeeModal(id) {
   document.getElementById('empDisabilityLevel').value = 'none';
   document.getElementById('empInsuranceMode').value = 'table';
   document.getElementById('empBonus').value = 0;
+  document.getElementById('empMealAllowance').value = 0;
   document.getElementById('empLeaveAdj').value = 0;
   document.getElementById('empNote').value = '';
   document.getElementById('empActive').value = '1';
@@ -2510,6 +1962,7 @@ function openEmployeeModal(id) {
     document.getElementById('empType').value = e.type;
     document.getElementById('empSalary').value = e.salary;
     document.getElementById('empStart').value = e.start || '';
+    document.getElementById('empLeaveDate').value = e.leaveDate || '';
     document.getElementById('empLabor').value = e.labor || 0;
     document.getElementById('empHealth').value = e.health || 0;
     document.getElementById('empRetirement').value = e.retirement || 0;
@@ -2517,6 +1970,7 @@ function openEmployeeModal(id) {
     document.getElementById('empDisabilityLevel').value = e.disabilityLevel || 'none';
     document.getElementById('empInsuranceMode').value = e.insuranceMode || 'manual';
     document.getElementById('empBonus').value = e.bonus || 0;
+    document.getElementById('empMealAllowance').value = e.mealAllowance || 0;
     document.getElementById('empLeaveAdj').value = e.leaveAdj || 0;
     document.getElementById('empNote').value = e.note || '';
     document.getElementById('empActive').value = e.active ? '1' : '0';
@@ -2576,8 +2030,6 @@ function refreshEmpSelects() {
   const allOpt = '<option value="">全部</option>';
   document.getElementById('attEmpFilter').innerHTML = allOpt + opts;
   document.getElementById('attEmpId').innerHTML = opts;
-  const rep = document.getElementById('reportEmpFilter');
-  if (rep) rep.innerHTML = allOpt + opts;
   const lef = document.getElementById('leaveEmpFilter');
   if (lef) lef.innerHTML = allOpt + opts;
   const lei = document.getElementById('leaveEmpId');
@@ -3056,7 +2508,8 @@ function validateLeaveQuotaRecord(rec, excludingId = '') {
 function getLeaveDeductionImpact(rec, emp) {
   const minutes = getLeaveRecordMinutes(rec);
   const hours = minutes / 60;
-  const hourlyRate = getHourlyRate(emp);
+  const { year, month } = getYearMonthFromDate(rec.date);
+  const hourlyRate = getHourlyRate(emp, year, month);
   const multiplier = LEAVE_DEDUCTION_MULTIPLIER[rec.type] ?? 0;
   const deduct = multiplier > 0 && emp.type === 'monthly'
     ? Math.round(hourlyRate * hours * multiplier)
@@ -3477,21 +2930,17 @@ function getRecommendedDayType(dateStr) {
 }
 
 function getEffectiveBaseSalary(emp, year, month) {
-  if (emp.type !== 'monthly') return { amount: 0, isPartial: false, workDays: 0 };
-  if (!emp.start) return { amount: emp.salary, isPartial: false, workDays: 0 };
-
-  const sd = new Date(emp.start + 'T00:00:00');
-  if (sd.getFullYear() === year && sd.getMonth() + 1 === month && sd.getDate() > 1) {
-    const daysInMonth = new Date(year, month, 0).getDate();
-    const workDays = daysInMonth - sd.getDate() + 1;
-    return {
-      amount: Math.round(emp.salary / 30 * workDays),
-      isPartial: true,
-      workDays
-    };
-  }
-
-  return { amount: emp.salary, isPartial: false, workDays: 0 };
+  if (emp.type !== 'monthly') return { amount: 0, fullAmount: 0, isPartial: false, workDays: 0, reasonLabel: '', startDate: '', endDate: '' };
+  const basis = getMonthlySalaryBasis(emp, year, month);
+  return {
+    amount: basis.amount,
+    fullAmount: basis.fullAmount,
+    isPartial: basis.isPartial,
+    workDays: basis.workDays,
+    reasonLabel: basis.reasonLabel,
+    startDate: basis.startDate,
+    endDate: basis.endDate
+  };
 }
 
 function getMonthlyLeaveSummary(empId, year, month) {
@@ -3517,8 +2966,12 @@ function buildPayrollSnapshot(emp, year, month) {
   const leaveSummary = getMonthlyLeaveSummary(emp.id, year, month);
   const adjustment = getMonthlyPayrollAdjustment(emp.id, year, month);
   const baseAmount = emp.type === 'monthly' ? baseInfo.amount : payroll.hourlyPay;
-  const bonus = emp.bonus || 0;
-  const mealAllowance = adjustment.mealAllowance || 0;
+  const bonus = emp.type === 'monthly' ? 0 : (emp.bonus || 0);
+  const empFixedMeal = emp.mealAllowance || 0;
+  const proratedEmpMeal = (emp.type === 'monthly' && baseInfo.isPartial && baseInfo.workDays > 0)
+    ? Math.round(empFixedMeal / 30 * baseInfo.workDays)
+    : empFixedMeal;
+  const mealAllowance = proratedEmpMeal + (adjustment.mealAllowance || 0);
   const mealDeduction = adjustment.mealDeduction || 0;
   const otherExpense = adjustment.otherExpense || 0;
   const yearEndBonus = adjustment.yearEndBonus || 0;
@@ -3599,13 +3052,16 @@ function buildPayrollSnapshot(emp, year, month) {
       grossBeforeDeduction,
       netPay,
       isPartialBase: baseInfo.isPartial,
-      partialWorkDays: baseInfo.workDays
+      partialWorkDays: baseInfo.workDays,
+      partialLabel: baseInfo.reasonLabel,
+      partialStartDate: baseInfo.startDate,
+      partialEndDate: baseInfo.endDate
     }
   };
 }
 
 function buildPayrollSnapshots(year, month, empIdFilter) {
-  const emps = getEmployees(true).filter(emp => !empIdFilter || emp.id === empIdFilter);
+  const emps = getEmployeesForMonth(year, month).filter(emp => !empIdFilter || emp.id === empIdFilter);
   return emps.map(emp => buildPayrollSnapshot(emp, year, month));
 }
 
@@ -3720,12 +3176,13 @@ function detectMonthlyAnomalies(year, month, empIdFilter) {
     });
   });
 
-  const activeEmps = getEmployees(true).filter(emp => !empIdFilter || emp.id === empIdFilter);
+  const activeEmps = getEmployeesForMonth(year, month).filter(emp => !empIdFilter || emp.id === empIdFilter);
   activeEmps.forEach(emp => {
     const daysInMonth = new Date(year, month, 0).getDate();
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
       if (emp.start && emp.start > dateStr) continue;
+      if (emp.leaveDate && emp.leaveDate < dateStr) continue;
       if (getRecommendedDayType(dateStr) !== 'normal') continue;
       const hasAttendance = data.attendance.some(rec => rec.empId === emp.id && rec.date === dateStr);
       const hasLeave = data.leaveRecs.some(rec => rec.empId === emp.id && rec.date === dateStr);
@@ -3854,9 +3311,7 @@ function anomalyBadge(severity) {
     low: ['bg-secondary', '低']
   };
   const [cls, label] = map[severity] || ['bg-secondary', severity];
-  const enLabels = { '高': 'High', '中': 'Medium', '低': 'Low' };
-  const displayLabel = getAppLocale() === 'en' ? (enLabels[label] || label) : label;
-  return `<span class="badge ${cls} rounded-pill">${displayLabel}</span>`;
+  return `<span class="badge ${cls} rounded-pill">${label}</span>`;
 }
 
 function renderReports() {
@@ -3885,7 +3340,7 @@ function renderReports() {
     ${renderEmployeeStatsReport(snapshots, totalLeaveDays)}
   `;
 
-  document.getElementById('reportResult').innerHTML = localizeHtmlOutput(html);
+  document.getElementById('reportResult').innerHTML = html;
 }
 
 function renderEmployeePayrollReport(snapshots) {
@@ -3896,14 +3351,14 @@ function renderEmployeePayrollReport(snapshots) {
         <table class="table table-hover mb-0">
           <thead>
             <tr>
-              <th>員工</th><th>底薪/工時薪資</th><th>固定加給</th><th>月結加項</th><th>月結扣項</th><th>加班費</th><th>遲到扣薪</th><th>早退扣薪</th><th>請假扣薪</th><th>保險/其他扣款</th><th>實發</th>
+              <th>員工</th><th>月薪基數/工時薪資</th><th>固定加給</th><th>月結加項</th><th>月結扣項</th><th>加班費</th><th>遲到扣薪</th><th>早退扣薪</th><th>請假扣薪</th><th>保險/其他扣款</th><th>實發</th>
             </tr>
           </thead>
           <tbody>
             ${snapshots.length ? snapshots.map(item => `
               <tr>
                 <td class="fw-semibold">${item.emp.name}</td>
-                <td>${fmtN(item.summary.baseAmount)} 元${item.summary.isPartialBase ? `<br><small class="text-muted">月中到職 ${item.summary.partialWorkDays} 天</small>` : ''}</td>
+                <td>${fmtN(item.summary.baseAmount)} 元${item.summary.isPartialBase ? `<br><small class="text-muted">${item.summary.partialLabel} ${item.summary.partialWorkDays} 天</small>` : ''}</td>
                 <td>${item.summary.bonus ? '+' + fmtN(item.summary.bonus) + ' 元' : '—'}</td>
                 <td>${formatMonthlyAddition(item.summary)}</td>
                 <td>${formatMonthlyDeduction(item.summary)}</td>
@@ -4040,6 +3495,10 @@ function buildPayslipPrintHtml(snapshot) {
             <td class="label">薪資類型</td><td>${snapshot.emp.type === 'monthly' ? '月薪制' : '時薪制'}</td>
             <td class="label">到職日</td><td>${snapshot.emp.start || '—'}</td>
           </tr>
+          <tr>
+            <td class="label">離職日</td><td>${snapshot.emp.leaveDate || '—'}</td>
+            <td class="label">未足月說明</td><td colspan="3">${snapshot.summary.isPartialBase ? `${snapshot.summary.partialLabel}｜${snapshot.summary.partialStartDate} ~ ${snapshot.summary.partialEndDate}｜${snapshot.summary.partialWorkDays} 天` : '—'}</td>
+          </tr>
         </tbody>
       </table>
       <div class="payslip-grid">
@@ -4064,8 +3523,8 @@ function buildPayslipPrintHtml(snapshot) {
               <tr><th colspan="2">應發項目</th></tr>
             </thead>
             <tbody>
-              <tr><td>底薪 / 工時薪資</td><td class="amount">${fmtN(snapshot.summary.baseAmount)} 元</td></tr>
-              <tr><td>固定加給</td><td class="amount">${fmtN(snapshot.summary.bonus)} 元</td></tr>
+              <tr><td>${snapshot.emp.type === 'monthly' ? '月薪基數（含固定加給）' : '工時薪資'}</td><td class="amount">${fmtN(snapshot.summary.baseAmount)} 元</td></tr>
+              ${snapshot.summary.bonus > 0 ? `<tr><td>固定加給</td><td class="amount">${fmtN(snapshot.summary.bonus)} 元</td></tr>` : ''}
               ${snapshot.summary.mealAllowance > 0 ? `<tr><td>伙食津貼</td><td class="amount">${fmtN(snapshot.summary.mealAllowance)} 元</td></tr>` : ''}
               ${snapshot.summary.yearEndBonus > 0 ? `<tr><td>年終獎金</td><td class="amount">${fmtN(snapshot.summary.yearEndBonus)} 元</td></tr>` : ''}
               ${snapshot.summary.specialAddition > 0 ? `<tr><td>薪資加項</td><td class="amount">${fmtN(snapshot.summary.specialAddition)} 元</td></tr>` : ''}
@@ -4146,7 +3605,7 @@ function printPayslips() {
     return;
   }
 
-  const html = localizeHtmlOutput(snapshots.map(buildPayslipPrintHtml).join(''));
+  const html = snapshots.map(buildPayslipPrintHtml).join('');
   const printWindow = window.open('', '_blank', 'width=1024,height=900');
   if (!printWindow) {
     document.getElementById('reportPrintArea').innerHTML = html;
@@ -4154,7 +3613,7 @@ function printPayslips() {
     return;
   }
 
-  printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${translateLiteralText('正式薪資單')}</title><style>${getPayslipPrintStyles()}</style></head><body>${html}</body></html>`);
+  printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>正式薪資單</title><style>${getPayslipPrintStyles()}</style></head><body>${html}</body></html>`);
   printWindow.document.close();
   printWindow.focus();
   printWindow.print();
@@ -4170,6 +3629,9 @@ function buildReportWorkbookData(year, month, empIdFilter) {
       月份: `${year}-${String(month).padStart(2,'0')}`,
       員工: item.emp.name,
       類型: item.emp.type === 'monthly' ? '月薪' : '時薪',
+      到職日: item.emp.start || '',
+      離職日: item.emp.leaveDate || '',
+      未足月說明: item.summary.isPartialBase ? `${item.summary.partialLabel} ${item.summary.partialWorkDays} 天` : '',
       保險來源: item.summary.insuranceSource === 'table' ? '參考表' : '手動',
       身障等級: item.summary.disabilityLabel,
       底薪工資: item.summary.baseAmount,
@@ -4199,6 +3661,8 @@ function buildReportWorkbookData(year, month, empIdFilter) {
       月份: `${year}-${String(month).padStart(2,'0')}`,
       員工: item.emp.name,
       到職日: item.emp.start || '',
+      離職日: item.emp.leaveDate || '',
+      未足月說明: item.summary.isPartialBase ? `${item.summary.partialLabel} ${item.summary.partialWorkDays} 天` : '',
       保險來源: item.summary.insuranceSource === 'table' ? '參考表' : '手動',
       身障等級: item.summary.disabilityLabel,
       出勤天數: item.summary.attendanceDays,
@@ -4262,18 +3726,16 @@ function exportReportsXlsx() {
   }
 
   const { year, month, empIdFilter } = getCurrentReportSelection();
-  const workbookData = localizeReportWorkbookData(buildReportWorkbookData(year, month, empIdFilter));
+  const workbookData = buildReportWorkbookData(year, month, empIdFilter);
   const wb = XLSX.utils.book_new();
 
   workbookData.sheetNames.forEach(name => {
     const rows = workbookData.sheets[name];
-    const ws = rows.length ? XLSX.utils.json_to_sheet(rows) : XLSX.utils.aoa_to_sheet([[localizeTextContent(`${name} 暫無資料`)]]);
+    const ws = rows.length ? XLSX.utils.json_to_sheet(rows) : XLSX.utils.aoa_to_sheet([[`${name} 暫無資料`]]);
     XLSX.utils.book_append_sheet(wb, ws, name);
   });
 
-  const fileName = getAppLocale() === 'en'
-    ? `attendance-payroll-report_${year}${String(month).padStart(2,'0')}.xlsx`
-    : `出勤薪資報表_${year}${String(month).padStart(2,'0')}.xlsx`;
+  const fileName = `出勤薪資報表_${year}${String(month).padStart(2,'0')}.xlsx`;
   XLSX.writeFile(wb, fileName);
 }
 
@@ -4284,9 +3746,9 @@ function calculatePayroll() {
   const monthVal = document.getElementById('payMonth').value;
   if (!monthVal) { alert('請選擇結算月份'); return; }
   const [y, m] = monthVal.split('-').map(Number);
-  const emps = getEmployees(true);
+  const emps = getEmployeesForMonth(y, m);
   if (!emps.length) { document.getElementById('payrollResult').innerHTML =
-    localizeHtmlOutput('<div class="alert alert-warning">尚無在職員工資料</div>'); return; }
+    '<div class="alert alert-warning">本月沒有可結算的員工資料</div>'; return; }
   const snapshots = emps.map(emp => buildPayrollSnapshot(emp, y, m));
   const payrollTotals = getPayrollSummaryTotals(snapshots);
 
@@ -4347,18 +3809,13 @@ function calculatePayroll() {
 
     // Partial month: auto-calculate proportional base salary
     let partialNote = '';
-    let effectiveBase = emp.type === 'monthly' ? emp.salary : 0;
-    if (emp.type === 'monthly' && emp.start) {
-      const sd = new Date(emp.start + 'T00:00:00');
-      if (sd.getFullYear() === y && sd.getMonth() + 1 === m && sd.getDate() > 1) {
-        const daysInMonth = new Date(y, m, 0).getDate();
-        const workDays = daysInMonth - sd.getDate() + 1;
-        effectiveBase = Math.round(emp.salary / 30 * workDays);
-        partialNote = `<div class="alert alert-info py-1 px-2 small mt-1">
-          <i class="bi bi-info-circle me-1"></i>本月到職日 ${emp.start}（月中到職），底薪已自動按比例計算：
-          ${emp.salary.toLocaleString()} ÷ 30 × ${workDays} 天 = <strong>${effectiveBase.toLocaleString()} 元</strong>
+    const baseInfo = getEffectiveBaseSalary(emp, y, m);
+    let effectiveBase = emp.type === 'monthly' ? baseInfo.amount : 0;
+    if (emp.type === 'monthly' && baseInfo.isPartial) {
+      partialNote = `<div class="alert alert-info py-1 px-2 small mt-1">
+          <i class="bi bi-info-circle me-1"></i>本月在職區間 ${baseInfo.startDate} ~ ${baseInfo.endDate}（${baseInfo.reasonLabel}），月薪基數（底薪＋固定加給）已自動按比例計算：
+          ${baseInfo.fullAmount.toLocaleString()} ÷ 30 × ${baseInfo.workDays} 天 = <strong>${effectiveBase.toLocaleString()} 元</strong>
         </div>`;
-      }
     }
 
     html += `
@@ -4380,10 +3837,10 @@ function calculatePayroll() {
         <div class="row g-2 mb-3">
           ${emp.type==='monthly' ? `
           <div class="col-6 col-md-3"><div class="bg-light rounded p-2 text-center">
-            <div class="small text-muted">底薪${effectiveBase !== emp.salary ? '（比例）' : ''}</div><div class="fw-bold">${fmtN(effectiveBase)} 元</div></div></div>` : `
+            <div class="small text-muted">月薪基數${effectiveBase !== baseInfo.fullAmount ? '（比例）' : ''}</div><div class="fw-bold">${fmtN(effectiveBase)} 元</div></div></div>` : `
           <div class="col-6 col-md-3"><div class="bg-light rounded p-2 text-center">
             <div class="small text-muted">工時薪資</div><div class="fw-bold">${fmtN(p.hourlyPay)} 元</div></div></div>`}
-          ${(emp.bonus||0) > 0 ? `
+          ${(emp.type !== 'monthly' && (emp.bonus||0) > 0) ? `
           <div class="col-6 col-md-3"><div class="bg-light rounded p-2 text-center">
             <div class="small text-muted">固定加給</div><div class="fw-bold text-success">+${fmtN(emp.bonus||0)} 元</div></div></div>` : ''}
           ${summary.mealAllowance > 0 ? `
@@ -4424,9 +3881,9 @@ function calculatePayroll() {
 
         <table class="table table-sm table-bordered mb-2">
           <tbody>
-            <tr><td class="text-muted" style="width:55%">底薪${effectiveBase !== (emp.type==='monthly'?emp.salary:0) ? '（月中到職比例）' : ''}</td>
+            <tr><td class="text-muted" style="width:55%">${emp.type==='monthly' ? `月薪基數${effectiveBase !== baseInfo.fullAmount ? '（未足月比例）' : ''}` : '工時薪資'}</td>
               <td class="fw-bold">${fmtN(effectiveBase || p.hourlyPay)} 元</td></tr>
-            ${(emp.bonus||0)>0 ? `<tr><td class="text-muted">固定加給</td><td class="text-success">+${fmtN(emp.bonus)} 元</td></tr>` : ''}
+            ${(emp.type !== 'monthly' && (emp.bonus||0)>0) ? `<tr><td class="text-muted">固定加給</td><td class="text-success">+${fmtN(emp.bonus)} 元</td></tr>` : ''}
             ${summary.mealAllowance > 0 ? `<tr><td class="text-muted">伙食津貼</td><td class="text-success">+${fmtN(summary.mealAllowance)} 元</td></tr>` : ''}
             ${summary.mealDeduction > 0 ? `<tr><td class="text-muted">伙食代墊</td><td class="text-danger">−${fmtN(summary.mealDeduction)} 元</td></tr>` : ''}
             ${summary.yearEndBonus > 0 ? `<tr><td class="text-muted">年終獎金</td><td class="text-success">+${fmtN(summary.yearEndBonus)} 元</td></tr>` : ''}
@@ -4483,7 +3940,7 @@ function calculatePayroll() {
     </div>`;
   }
 
-  document.getElementById('payrollResult').innerHTML = localizeHtmlOutput(html);
+  document.getElementById('payrollResult').innerHTML = html;
 }
 
 // =============================================
@@ -4529,27 +3986,6 @@ function importData(input) {
     input.value = '';
   };
   reader.readAsText(file);
-}
-
-function loadDemoData() {
-  if (!confirm('載入範例資料會覆蓋目前瀏覽器資料。請先備份。是否繼續？')) return;
-  saveData(createDemoData());
-  const demoMonth = '2026-04';
-  document.getElementById('attMonth').value = demoMonth;
-  document.getElementById('payMonth').value = demoMonth;
-  document.getElementById('reportMonth').value = demoMonth;
-  renderEmployees();
-  refreshEmpSelects();
-  renderAttendance();
-  renderInsuranceRates();
-  initLeaveYearFilter();
-  initHolidayYearFilter();
-  renderLeave();
-  renderHolidayOverrides();
-  renderReports();
-  calculatePayroll();
-  applyI18n();
-  alert('範例資料已載入，可到出勤紀錄、薪資結算與報表中心查看。');
 }
 
 function clearAllData() {
@@ -4606,18 +4042,16 @@ document.getElementById('attEmpFilter').addEventListener('change', renderAttenda
 document.getElementById('leaveEmpFilter')?.addEventListener('change', renderLeave);
 document.getElementById('leaveYearFilter')?.addEventListener('change', renderLeave);
 document.getElementById('holidayYearFilter')?.addEventListener('change', renderHolidayOverrides);
-document.getElementById('reportMonth')?.addEventListener('change', renderReports);
+document.getElementById('reportMonth')?.addEventListener('change', () => {
+  refreshReportEmployeeFilter();
+  renderReports();
+});
 document.getElementById('reportEmpFilter')?.addEventListener('change', renderReports);
-document.getElementById('appLocale')?.addEventListener('change', e => setAppLocale(e.target.value));
 
 // =============================================
 //  INIT
 // =============================================
 function init() {
-  installI18nDialogs();
-  startI18nObserver();
-  applyI18n();
-
   // Today display
   const now = new Date();
   document.getElementById('todayDisplay').textContent =
@@ -4631,13 +4065,13 @@ function init() {
 
   renderEmployees();
   refreshEmpSelects();
+  refreshReportEmployeeFilter();
   renderInsuranceRates();
   initLeaveYearFilter();
   initHolidayYearFilter();
   renderLeave();
   renderHolidayOverrides();
   renderReports();
-  applyI18n();
 
   // Show first tab
   document.getElementById('tab-employees').classList.remove('d-none');

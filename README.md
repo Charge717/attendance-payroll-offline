@@ -8,7 +8,7 @@
 [![No Server](https://img.shields.io/badge/server-not%20required-brightgreen.svg)](#quick-start)
 [![Offline First](https://img.shields.io/badge/offline-first-lightblue.svg)](#quick-start)
 [![Taiwan Labor Law](https://img.shields.io/badge/台灣勞基法-適用-red.svg)](#features)
-[![Version](https://img.shields.io/badge/version-v1.7-informational.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.1-informational.svg)](CHANGELOG.md)
 
 <p align="center">
   <a href="https://charge717.github.io/attendance-payroll-offline/"><strong>Try the demo</strong></a>

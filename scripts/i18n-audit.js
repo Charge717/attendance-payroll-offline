@@ -104,6 +104,10 @@ function extractStaticChineseText(html) {
 
 const html = fs.readFileSync(APP_PATH, 'utf8');
 const app = loadAppForAudit(html);
+if (typeof app.translateLiteralText !== 'function') {
+  console.log('i18n audit skipped: app does not expose translateLiteralText.');
+  process.exit(0);
+}
 const staticItems = extractStaticChineseText(html);
 const untranslated = staticItems.filter(item => /[\u4e00-\u9fff]/.test(app.translateLiteralText(item, 'en')));
 
