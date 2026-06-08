@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const IGNORED_DIRS = new Set(['.git', 'node_modules', '.cache', 'dist', 'coverage', 'tmp', 'temp']);
+const IGNORED_DIRS = new Set(['.git', 'node_modules', '.cache', 'dist', 'coverage', 'tmp', 'temp', '_archive']);
 const BLOCKED_EXTENSIONS = new Set(['.xlsx', '.xls', '.csv', '.zip']);
 const ALLOWED_FILES = new Set([
   path.normalize('package.json'),
