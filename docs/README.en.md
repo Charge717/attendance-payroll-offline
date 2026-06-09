@@ -1,41 +1,55 @@
 # English Project Overview
 
-Attendance Payroll Offline is an offline-first attendance and payroll management tool for small organizations.
+Attendance Payroll Offline is an offline-first attendance and payroll tool for small teams. It runs as a single HTML file and stores working data locally in the browser by default.
 
-It is designed for administrators, HR staff, accountants, and managers who need a lightweight way to record attendance, manage leave, calculate payroll, print payslips, and keep local backups. The app runs as a single HTML file, and working data is stored locally in the browser by default, completely free of any external servers or databases.
+The project is multilingual at the interface and documentation level, but the maintained payroll calculation preset is Taiwan-focused.
 
-## Important Scope Note
+## Scope
 
-Core UI supports multiple languages, but payroll/legal calculation presets are Taiwan-focused by default.
+The built-in preset covers Taiwan-oriented attendance and payroll concepts, including labor insurance, national health insurance, labor pension contribution, leave handling, overtime, salary settlement, payslips, and spreadsheet export.
 
-The current payroll rules cover Taiwan-specific concepts such as labor insurance, national health insurance, pension contribution, various leave types (special leave, compensatory leave, bereavement leave), and related payroll adjustments. Users outside Taiwan should treat these rules as a reference implementation rather than official legal or payroll advice for their jurisdiction.
+Users outside Taiwan should treat the Taiwan preset as a reference implementation. Before using the app for another jurisdiction, review the rules with a local payroll, HR, tax, or legal professional.
+
+This project does not provide legal, tax, HR, or payroll compliance advice.
 
 ## Why This Project Exists
 
-Many small teams need transparent payroll tools that can work without a backend server, cloud subscription, or external database. This project keeps the app portable as a single HTML file, while having tests and documentation so any calculation changes can be safely reviewed.
+Many small teams need transparent payroll software that works without a backend server, subscription, or external database. This project keeps the app portable while preserving regression tests and documentation so calculation changes can be reviewed.
 
-## Current Priorities
+## What Contributors Can Safely Help With
 
-- Keep payroll and leave calculations transparent and auditable
-- Add regression tests to cover every calculation edge case
-- Improve English UI coverage and documentation
-- Maintain a clean GitHub contribution workflow
-- Add more language translations for the interface without altering the default Taiwan payroll rules
+- Translation and copy editing
+- Documentation and examples
+- Accessibility improvements
+- UI polish
+- Privacy and test tooling
+- Regression tests for known calculation behavior
+
+## What Requires Extra Care
+
+Payroll-rule changes require tests, documentation, and a clear jurisdiction label. A translation PR should not silently change calculation behavior.
+
+New country or region presets should be proposed as separate rule presets, not as changes to the Taiwan preset.
 
 ## Non-Goals
 
-- This tool does not provide legal, tax, or HR compliance advice.
-- This is not a multi-country payroll engine yet.
-- This app does not upload payroll data to any cloud service.
+- This is not a global payroll engine yet.
+- This is not a substitute for local payroll compliance review.
+- This app does not upload payroll data to any cloud service by default.
 
 ## Running Tests
-Before deploying any custom modifications to the payroll logic, verify your changes by running the regression tests using:
+
 ```bash
-node --test tests/payroll-calculation.test.js
+npm test
+npm run privacy:audit
+npm run i18n:audit
 ```
 
 ## Related Documents
 
+- Traditional Chinese overview: [README.zh-TW.md](README.zh-TW.md)
+- Rule preset policy: [rule-presets.md](rule-presets.md)
+- Bilingual glossary: [glossary.zh-TW-en.md](glossary.zh-TW-en.md)
 - User manual: [manual.en.md](manual.en.md)
 - Internationalization notes: [i18n.md](i18n.md)
 - Traditional Chinese specification: [spec.zh-TW.md](spec.zh-TW.md)
