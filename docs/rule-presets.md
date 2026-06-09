@@ -36,6 +36,8 @@ Future presets should be defined as structured rule data rather than scattered U
 - Payslip and export labels
 - Regression test cases
 
+See [rule-preset-schema.md](rule-preset-schema.md) for the current schema draft.
+
 ## Proposed Presets
 
 | Preset | Status | Description |

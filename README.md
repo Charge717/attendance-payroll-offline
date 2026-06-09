@@ -126,6 +126,7 @@ attendance-payroll-offline/
 | 中文專案說明 | [docs/README.zh-TW.md](docs/README.zh-TW.md) |
 | English overview | [docs/README.en.md](docs/README.en.md) |
 | Jurisdiction and rule preset policy | [docs/rule-presets.md](docs/rule-presets.md) |
+| Rule preset schema draft | [docs/rule-preset-schema.md](docs/rule-preset-schema.md) |
 | Bilingual glossary | [docs/glossary.zh-TW-en.md](docs/glossary.zh-TW-en.md) |
 | Traditional Chinese manual | [docs/manual.zh-TW.html](docs/manual.zh-TW.html) |
 | Printable manual PDF | [docs/manual.zh-TW.pdf](docs/manual.zh-TW.pdf) |

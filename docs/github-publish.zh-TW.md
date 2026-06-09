@@ -1,77 +1,118 @@
-# GitHub 發布流程
+# GitHub 發布檢查清單
 
-## 目前狀態
+這份文件用來協助維護者在公開發布前確認 repo 狀態。它不是使用手冊，而是發布流程備忘。
 
-本資料夾 `attendance-payroll-offline` 已經是獨立 Git repository，預設分支為 `main`。
+## 發布前確認
 
-目前已有多筆 commit，可直接推送到 GitHub。
-
-## 推送前檢查
-
-確認不要把真實個資或薪資資料放進 Git：
-
-- 不要提交真實員工名冊
-- 不要提交薪資匯出 Excel
-- 不要提交備份 JSON
-- 不要提交含個資的 bug 回報附件
-
-本專案 `.gitignore` 已預設排除常見薪資、備份與匯出檔案，但推送前仍建議確認一次：
+1. 確認工作樹乾淨。
 
 ```bash
 git status
 ```
 
-## 建立 GitHub Repository
+2. 確認沒有私人資料或匯出檔。
 
-1. 登入 GitHub。
-2. 建立新的 repository，例如 `attendance-payroll-offline`。
-3. 建議先建立空 repository，不要勾選自動產生 README、license 或 `.gitignore`，因為本機專案已經有這些檔案。
-4. 複製 GitHub 顯示的 HTTPS remote URL。
+```bash
+npm run privacy:audit
+```
 
-URL 格式通常像這樣：
+3. 執行測試。
+
+```bash
+npm run check
+npm test
+```
+
+4. 如有調整文件或 UI 語系，執行 i18n 檢查。
+
+```bash
+npm run i18n:audit
+```
+
+## 不應提交的資料
+
+請勿提交下列內容：
+
+- 真實員工姓名、身分資料、電話、地址
+- 真實薪資、出勤、假勤資料
+- JSON 備份檔
+- Excel / CSV / zip 匯出檔
+- SQLite 或其他資料庫檔
+- 含有私人資料的截圖
+
+如需示範，請使用 fictional demo data。
+
+## GitHub Repository 建議設定
+
+Repository name:
 
 ```text
-https://github.com/<your-account>/attendance-payroll-offline.git
+attendance-payroll-offline
 ```
 
-## 設定 Remote 並推送
+Description:
 
-在本機專案資料夾執行：
+```text
+Offline-first attendance and payroll app with a tested Taiwan payroll preset and configurable rule path.
+```
+
+Topics:
+
+```text
+attendance
+payroll
+hr
+offline-first
+local-first
+single-file-app
+browser-app
+javascript
+taiwan
+taiwan-payroll
+rule-presets
+open-source
+```
+
+Website:
+
+```text
+https://charge717.github.io/attendance-payroll-offline/
+```
+
+## 重要定位
+
+公開描述應保持以下邊界：
+
+```text
+介面與文件可以多語化，但目前維護中的薪資規則預設以台灣為主。其他地區需自行確認法規並調整規則。
+```
+
+避免寫成：
+
+- 全球薪資系統
+- 適用所有國家法規
+- 自動符合各地勞動法令
+
+## 建立 Release
+
+建議 release notes 至少包含：
+
+- 版本重點
+- 主要修正
+- 是否影響薪資規則
+- 驗證指令
+- 法規/地區適用範圍說明
+
+範例：
 
 ```bash
-git remote add origin https://github.com/<your-account>/attendance-payroll-offline.git
-git push -u origin main
+gh release create v2.1.0 --target main --title "v2.1.0 - Taiwan preset positioning and payroll fixes" --notes-file release-notes.md
 ```
 
-如果 remote 已存在但網址要更換：
+## 發布後確認
 
-```bash
-git remote set-url origin https://github.com/<your-account>/attendance-payroll-offline.git
-git push -u origin main
-```
-
-## 是否需要提供 GitHub 帳號？
-
-不用提供 GitHub 密碼。
-
-如果要我在這台機器上協助推送，你可以提供其中一種資訊：
-
-- 空的 GitHub repository HTTPS URL
-- GitHub username，並且你自己在瀏覽器或終端機完成登入
-- 你先執行 `gh auth login` 登入 GitHub CLI，之後我可以用 `gh repo create` 或 `git push`
-
-若要讓 commit 歸屬到你的 GitHub 帳號，建議設定你的 Git 作者資訊：
-
-```bash
-git config user.name "<your-github-name>"
-git config user.email "<your-github-noreply-email>"
-```
-
-GitHub noreply email 可以在 GitHub 的 Email settings 頁面找到。
-
-## 推送後建議
-
-- 在 GitHub repository description 放入一句簡短說明。
-- 加上 topics：`attendance`, `payroll`, `offline`, `taiwan`, `hr`, `javascript`。
-- 確認 Actions 裡的 Tests workflow 有成功執行。
-- 在 README 保留範圍聲明：Core UI supports multiple languages, but payroll/legal calculation presets are Taiwan-focused by default.
+- GitHub Actions 是否通過。
+- README badge 版本是否正確。
+- GitHub Pages demo 是否能開啟。
+- Release 是否標示為 latest。
+- 沒有 private export 或 backup 出現在 repo。

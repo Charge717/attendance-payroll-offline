@@ -44,4 +44,4 @@ https://github.com/Charge717/attendance-payroll-offline
 Live Demo:
 https://charge717.github.io/attendance-payroll-offline/
 
-Feedback is highly appreciated! I welcome contribution of all kinds, from documentation improvements and tests, to accessibility enhancements and localization.
+Feedback is welcome, especially on documentation, tests, accessibility, localization, and the future rule preset design.

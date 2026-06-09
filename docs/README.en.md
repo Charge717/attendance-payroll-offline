@@ -49,6 +49,7 @@ npm run i18n:audit
 
 - Traditional Chinese overview: [README.zh-TW.md](README.zh-TW.md)
 - Rule preset policy: [rule-presets.md](rule-presets.md)
+- Rule preset schema draft: [rule-preset-schema.md](rule-preset-schema.md)
 - Bilingual glossary: [glossary.zh-TW-en.md](glossary.zh-TW-en.md)
 - User manual: [manual.en.md](manual.en.md)
 - Internationalization notes: [i18n.md](i18n.md)
