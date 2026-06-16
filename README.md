@@ -2,14 +2,14 @@
 
 Offline-first attendance and payroll software with a tested Taiwan payroll preset, configurable rules, and multilingual documentation.
 
-離線優先的出勤薪資工具，內建已測試的台灣薪資規則預設，並保留規則調整與多語文件的擴充空間。
+離線優先的出勤薪資工具，內建已測試的台灣薪資規則預設，並提供公司規則調整與多語文件的擴充空間。
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Built with HTML](https://img.shields.io/badge/built%20with-HTML%20only-orange.svg)](src/index.html)
 [![No Server](https://img.shields.io/badge/server-not%20required-brightgreen.svg)](#quick-start)
 [![Offline First](https://img.shields.io/badge/offline-first-lightblue.svg)](#privacy-and-data)
 [![Taiwan Preset](https://img.shields.io/badge/payroll%20preset-Taiwan%202026-red.svg)](#scope)
-[![Version](https://img.shields.io/badge/version-v2.1-informational.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.2-informational.svg)](CHANGELOG.md)
 
 <p align="center">
   <a href="https://charge717.github.io/attendance-payroll-offline/"><strong>Try the demo</strong></a>
@@ -31,7 +31,7 @@ This project is internationalized at the interface and documentation level, but 
 
 - The maintained preset is for Taiwan attendance and payroll workflows.
 - Users outside Taiwan should treat the Taiwan preset as a reference implementation.
-- Other jurisdictions require local review and custom configuration.
+- Other jurisdictions require local review and Company Rules configuration.
 - This project is not legal, tax, HR, or payroll compliance advice.
 
 That boundary is intentional: translation can be community-driven, but payroll rules must stay explicit, testable, and jurisdiction-aware.
@@ -45,7 +45,7 @@ Small teams often need a transparent payroll tool that does not require a SaaS s
 | Install | Open a single HTML file in a browser |
 | Data storage | Local browser storage and user-controlled backups |
 | Default rules | Tested Taiwan payroll preset |
-| Customization | Manual payroll adjustments and future rule preset path |
+| Customization | Company Rules tab, manual payroll adjustments, and future preset path |
 | Privacy | No server upload by default |
 | Reviewability | Open source code, tests, and documentation |
 
@@ -66,6 +66,13 @@ Small teams often need a transparent payroll tool that does not require a SaaS s
 - Overtime, leave deduction, fixed allowance, meal allowance, and manual adjustment handling
 - Printable payslips and `.xlsx` export
 - Regression tests for payroll edge cases
+
+### Company Rules
+
+- Configurable standard start/end time and unpaid lunch break
+- Configurable weekday overtime start, rest-day paid window, and overtime multipliers
+- Configurable leave deduction percentages and default holiday handling mode
+- Legacy backups automatically receive the maintained `tw-2026` defaults
 
 ### Data Safety
 

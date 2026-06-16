@@ -8,7 +8,7 @@ The maintained built-in payroll preset is:
 tw-2026
 ```
 
-It represents the app's current Taiwan-oriented attendance and payroll behavior. The preset includes tested logic for attendance, leave, overtime, partial-month salary, meal allowance, insurance-related fields, payroll settlement, payslip output, and spreadsheet export.
+It represents the app's current Taiwan-oriented attendance and payroll behavior. The preset includes tested logic for attendance, leave, overtime, partial-month salary, meal allowance, insurance-related fields, payroll settlement, payslip output, and spreadsheet export. v2.2 also stores user overrides in `companyRules` when the Company Rules tab is saved.
 
 ## Policy
 
@@ -17,9 +17,21 @@ The interface may be translated, but payroll rules must remain jurisdiction-awar
 For now:
 
 - `tw-2026` is the only maintained jurisdiction preset.
-- The app may expose custom manual fields and future custom settings.
+- The app exposes a `custom` Company Rules mode for user-controlled calculation assumptions.
 - Users outside Taiwan must review and configure rules before relying on payroll output.
 - The project does not provide legal, tax, HR, or payroll compliance advice.
+
+## Implemented Custom Settings
+
+The current `custom` MVP can override:
+
+- Standard start/end time and unpaid lunch break.
+- Weekday overtime start time.
+- Rest-day paid window, rest-day extended overtime start, and overtime multipliers.
+- Default holiday handling mode: extra day pay or compensatory leave.
+- Leave deduction multipliers for the built-in leave types.
+
+It does not yet replace the maintained `tw-2026` jurisdiction preset with another country or region preset.
 
 ## Future Preset Shape
 
@@ -43,7 +55,7 @@ See [rule-preset-schema.md](rule-preset-schema.md) for the current schema draft.
 | Preset | Status | Description |
 |---|---|---|
 | `tw-2026` | Maintained | Current Taiwan payroll preset. |
-| `custom` | Planned | User-configurable rules for teams that must adapt behavior locally. |
+| `custom` | Implemented MVP | User-configurable rules for teams that must adapt behavior locally. |
 | Other country/region presets | Proposal only | Must include sources, tests, and documentation. |
 
 ## Contribution Requirements for New Presets

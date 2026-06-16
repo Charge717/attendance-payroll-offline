@@ -1,6 +1,6 @@
 # Rule Preset Schema Draft
 
-This draft describes the shape future payroll rule presets should move toward. It is documentation only; the current application still uses the existing Taiwan-focused logic in `src/index.html`.
+This draft describes the shape future payroll rule presets should move toward. v2.2 includes a first `companyRules` implementation in `src/index.html`; this document remains the longer-term target for extracting presets into standalone, reviewable rule data.
 
 The goal is to make future rule changes reviewable, testable, and clearly tied to a jurisdiction.
 
@@ -102,13 +102,21 @@ type RulePreset = {
 }
 ```
 
-## Migration Path
+## Current Implementation Status
 
-1. Keep the current payroll regression tests passing.
-2. Identify calculation constants currently embedded in `src/index.html`.
-3. Move one low-risk group of settings into a read-only preset object.
-4. Add tests proving the extracted preset produces the same result.
-5. Add a `custom` preset only after the Taiwan preset extraction is stable.
+Implemented in v2.2:
+
+- `DEFAULT_COMPANY_RULES` stores the maintained `tw-2026` defaults inside `src/index.html`.
+- `companyRules` is saved in local browser data and JSON backups.
+- Older data is normalized with `tw-2026` defaults.
+- The Company Rules tab can save a `custom` override for work schedule, lunch break, overtime, holiday default mode, and leave deduction multipliers.
+- Regression tests cover default compatibility and custom rule behavior.
+
+Still future work:
+
+1. Extract presets from `src/index.html` into standalone rule modules or JSON.
+2. Add stable preset metadata for jurisdiction, effective dates, locale, rounding, and exports.
+3. Add external preset review requirements before accepting non-Taiwan jurisdiction presets.
 
 ## Review Checklist
 

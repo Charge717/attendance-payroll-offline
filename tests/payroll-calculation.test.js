@@ -751,3 +751,194 @@ test('end-to-end partial-month payroll: prorated base + prorated meal - insuranc
   assert.equal(snapshot.summary.deductions, 956);
   assert.equal(snapshot.summary.netPay, 22924);
 });
+
+// ─── D 群：公司規則自訂 ────────────────────────────────────────────────────────
+
+test('legacy backups are normalized with Taiwan default company rules', () => {
+  const app = loadApp();
+  seedData(app, {});
+
+  const data = app.getData();
+  assert.equal(data.companyRules.presetId, 'tw-2026');
+  assert.equal(data.companyRules.workSchedule.standardStart, '08:00');
+  assert.equal(data.companyRules.workSchedule.standardEnd, '17:00');
+  assert.equal(data.companyRules.overtime.weekdayStart, '18:00');
+});
+
+test('custom company rules use configured workday and weekday overtime start', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-custom-rules',
+    name: '自訂規則員工',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
+  seedData(app, {
+    employees: [emp],
+    companyRules: {
+      presetId: 'custom',
+      workSchedule: {
+        standardStart: '09:00',
+        standardEnd: '18:00',
+        unpaidBreakEnabled: true,
+        lunchStart: '12:30',
+        lunchEnd: '13:30'
+      },
+      overtime: {
+        weekdayStart: '19:00',
+        restDayStart: '09:00',
+        restDayEnd: '18:00',
+        restDayOvertimeStart: '19:00',
+        firstTwoHoursMultiplier: 1.5,
+        afterTwoHoursMultiplier: 2
+      }
+    }
+  });
+
+  const calc = app.calcRecord({
+    id: 'att-custom-rules',
+    empId: emp.id,
+    date: '2026-04-20',
+    checkIn: '09:00',
+    checkOut: '20:00',
+    dayType: 'normal'
+  }, emp);
+
+  assert.equal(calc.tardinessMin, 0);
+  assert.equal(calc.earlyLeaveMin, 0);
+  assert.equal(calc.normalHours, 8);
+  assert.equal(calc.otHours, 1);
+  assert.equal(calc.otPay, 188);
+});
+
+test('custom leave deduction rates apply to day-based leave and custom standard day length', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-custom-leave',
+    name: '自訂假別員工',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
+  seedData(app, {
+    employees: [emp],
+    leaveRecs: [{
+      id: 'leave-custom-other',
+      empId: emp.id,
+      date: '2026-04-21',
+      type: 'other',
+      days: 1,
+      hours: 0,
+      note: ''
+    }],
+    companyRules: {
+      presetId: 'custom',
+      workSchedule: {
+        standardStart: '09:00',
+        standardEnd: '17:00',
+        unpaidBreakEnabled: true,
+        lunchStart: '12:00',
+        lunchEnd: '12:30'
+      },
+      leaveDeductionMultipliers: {
+        annual: 0,
+        personal: 1,
+        sick: 0.5,
+        menstrual: 0.5,
+        bereavement: 0,
+        comp_use: 0,
+        other: 0.75
+      }
+    }
+  });
+
+  const payroll = app.calcMonthlyPayroll(emp, 2026, 4);
+  assert.equal(payroll.totalLeaveMinutes, 450);
+  assert.equal(payroll.totalLeaveDeduct, 703);
+});
+
+test('custom holiday default mode uses compensatory leave when record mode is blank', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-custom-holiday',
+    name: '自訂假日員工',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
+  seedData(app, {
+    employees: [emp],
+    companyRules: {
+      presetId: 'custom',
+      specialDays: {
+        holidayDefaultMode: 'comp_leave'
+      }
+    }
+  });
+
+  const calc = app.calcRecord({
+    id: 'att-custom-holiday',
+    empId: emp.id,
+    date: '2026-05-01',
+    checkIn: '08:00',
+    checkOut: '17:00',
+    dayType: 'holiday',
+    holidayMode: ''
+  }, emp);
+
+  assert.equal(calc.otPay, 0);
+  assert.equal(calc.compLeave, 8);
+});
+
+test('attendance preview renders configured rest day rule text without throwing', () => {
+  const app = loadApp();
+  const emp = {
+    id: 'emp-preview-rest-day',
+    name: 'Preview Rest Day',
+    type: 'monthly',
+    salary: 30000,
+    bonus: 0,
+    labor: 0,
+    health: 0,
+    retirement: 0,
+    other: 0,
+    active: true
+  };
+  seedData(app, {
+    employees: [emp],
+    companyRules: {
+      presetId: 'custom',
+      overtime: {
+        restDayStart: '09:00',
+        restDayEnd: '18:00',
+        restDayOvertimeStart: '19:00'
+      }
+    }
+  });
+
+  app.document.getElementById('attEmpId').value = emp.id;
+  app.document.getElementById('attDate').value = '2026-04-25';
+  app.document.getElementById('attIn').value = '09:00';
+  app.document.getElementById('attOut').value = '20:00';
+  app.document.getElementById('attDayType').value = 'saturday';
+  app.document.getElementById('attHolidayMode').value = 'pay_day';
+
+  assert.doesNotThrow(() => app.updateAttPreview());
+  assert.match(app.document.getElementById('attPreview').innerHTML, /09:00~18:00/);
+});

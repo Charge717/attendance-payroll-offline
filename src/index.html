@@ -127,7 +127,7 @@
   <span class="navbar-brand"><i class="bi bi-calendar2-check me-2"></i>出勤薪資管理系統</span>
   <span class="text-white-50 small" id="todayDisplay"></span>
   <span class="text-white-50 small" style="font-size:0.78rem;letter-spacing:0.03em;">
-    <i class="bi bi-code-slash me-1" style="opacity:0.6"></i>Dev&nbsp;<strong class="text-white" style="opacity:0.85">貓落去 v2.1</strong>
+    <i class="bi bi-code-slash me-1" style="opacity:0.6"></i>Dev&nbsp;<strong class="text-white" style="opacity:0.85">貓落去 v2.2</strong>
   </span>
 </nav>
 
@@ -145,6 +145,8 @@
       <i class="bi bi-cash-stack me-1"></i>薪資結算</a></li>
     <li class="nav-item"><a class="nav-link" data-tab="reports" href="#">
       <i class="bi bi-file-earmark-bar-graph me-1"></i>報表中心</a></li>
+    <li class="nav-item"><a class="nav-link" data-tab="rules" href="#">
+      <i class="bi bi-sliders me-1"></i>公司規則</a></li>
     <li class="nav-item"><a class="nav-link" data-tab="backup" href="#">
       <i class="bi bi-cloud-arrow-down me-1"></i>備份管理</a></li>
   </ul>
@@ -475,7 +477,143 @@
     <div id="reportPrintArea" class="print-area"></div>
   </div>
 
-  <!-- ===== TAB 5: 備份管理 ===== -->
+  <!-- ===== TAB 5: 公司規則 ===== -->
+  <div class="tab-pane d-none" id="tab-rules">
+    <div class="row g-3 mb-3">
+      <div class="col-lg-4">
+        <div class="card p-3 h-100">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="fw-bold mb-0"><i class="bi bi-building-gear me-1 text-primary"></i>規則狀態</h6>
+            <span class="badge bg-light text-dark border" id="rulePresetBadge">tw-2026</span>
+          </div>
+          <div id="ruleSummary" class="small text-muted"></div>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-primary btn-sm" onclick="saveCompanyRules()">
+              <i class="bi bi-check2 me-1"></i>儲存規則
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="resetCompanyRulesToTaiwanDefault()">
+              <i class="bi bi-arrow-counterclockwise me-1"></i>還原台灣預設
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="alert-info-soft h-100">
+          <i class="bi bi-info-circle me-1"></i>
+          這裡調整的是公司內部計算假設；系統仍保留台灣預設，不提供跨國法規判定。若公司制度不同，請先用測試月份核對結果後再正式結算。
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-lg-6">
+        <div class="card p-3 h-100">
+          <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-1 text-primary"></i>標準工時</h6>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label class="form-label">標準上班時間</label>
+              <input type="time" class="form-control" id="ruleStandardStart">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">標準下班時間</label>
+              <input type="time" class="form-control" id="ruleStandardEnd">
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="ruleUnpaidBreakEnabled">
+                <label class="form-check-label" for="ruleUnpaidBreakEnabled">午休不計薪</label>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">午休開始</label>
+              <input type="time" class="form-control" id="ruleLunchStart">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">午休結束</label>
+              <input type="time" class="form-control" id="ruleLunchEnd">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card p-3 h-100">
+          <h6 class="fw-bold mb-3"><i class="bi bi-lightning-charge me-1 text-warning"></i>加班與特殊日</h6>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label class="form-label">平日加班起算</label>
+              <input type="time" class="form-control" id="ruleWeekdayOtStart">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">國定假日預設</label>
+              <select class="form-select" id="ruleHolidayDefaultMode">
+                <option value="pay_day">加發 1 日工資</option>
+                <option value="comp_leave">補休</option>
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">休息日基礎開始</label>
+              <input type="time" class="form-control" id="ruleRestDayStart">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">休息日基礎結束</label>
+              <input type="time" class="form-control" id="ruleRestDayEnd">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">休息日延長起算</label>
+              <input type="time" class="form-control" id="ruleRestDayOtStart">
+            </div>
+            <div class="col-sm-3">
+              <label class="form-label">前 2 小時倍率</label>
+              <input type="number" class="form-control" id="ruleOtRateFirstTwo" min="0" step="0.01">
+            </div>
+            <div class="col-sm-3">
+              <label class="form-label">第 3 小時後倍率</label>
+              <input type="number" class="form-control" id="ruleOtRateAfterTwo" min="0" step="0.01">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card p-3">
+          <h6 class="fw-bold mb-3"><i class="bi bi-calendar-heart me-1 text-success"></i>假別扣薪比例</h6>
+          <div class="row g-3">
+            <div class="col-sm-6 col-lg-3">
+              <label class="form-label">特休扣薪 %</label>
+              <input type="number" class="form-control" id="ruleLeaveDeduct_annual" min="0" max="100" step="1">
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <label class="form-label">事假扣薪 %</label>
+              <input type="number" class="form-control" id="ruleLeaveDeduct_personal" min="0" max="100" step="1">
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <label class="form-label">病假扣薪 %</label>
+              <input type="number" class="form-control" id="ruleLeaveDeduct_sick" min="0" max="100" step="1">
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <label class="form-label">生理假扣薪 %</label>
+              <input type="number" class="form-control" id="ruleLeaveDeduct_menstrual" min="0" max="100" step="1">
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <label class="form-label">喪假扣薪 %</label>
+              <input type="number" class="form-control" id="ruleLeaveDeduct_bereavement" min="0" max="100" step="1">
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <label class="form-label">補休扣薪 %</label>
+              <input type="number" class="form-control" id="ruleLeaveDeduct_comp_use" min="0" max="100" step="1">
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <label class="form-label">其他假別扣薪 %</label>
+              <input type="number" class="form-control" id="ruleLeaveDeduct_other" min="0" max="100" step="1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 6: 備份管理 ===== -->
   <div class="tab-pane d-none" id="tab-backup">
     <div class="row g-3">
       <div class="col-md-4">
@@ -806,6 +944,37 @@ const OT_RATE1     = 1.34;
 const OT_RATE2     = 1.67;
 const WEEK_NAMES   = ['日','一','二','三','四','五','六'];
 
+const DEFAULT_COMPANY_RULES = {
+  presetId: 'tw-2026',
+  workSchedule: {
+    standardStart: '08:00',
+    standardEnd: '17:00',
+    unpaidBreakEnabled: true,
+    lunchStart: '12:00',
+    lunchEnd: '13:00'
+  },
+  overtime: {
+    weekdayStart: '18:00',
+    restDayStart: '08:00',
+    restDayEnd: '17:00',
+    restDayOvertimeStart: '18:00',
+    firstTwoHoursMultiplier: 1.34,
+    afterTwoHoursMultiplier: 1.67
+  },
+  specialDays: {
+    holidayDefaultMode: 'pay_day'
+  },
+  leaveDeductionMultipliers: {
+    annual: 0,
+    personal: 1,
+    sick: 0.5,
+    menstrual: 0.5,
+    bereavement: 0,
+    comp_use: 0,
+    other: 0
+  }
+};
+
 // =============================================
 //  TAIWAN PUBLIC HOLIDAYS
 // =============================================
@@ -834,8 +1003,112 @@ function isTWHoliday(dateStr) {
   return TW_HOLIDAYS.has(dateStr);
 }
 
+function cloneDefaultCompanyRules() {
+  return JSON.parse(JSON.stringify(DEFAULT_COMPANY_RULES));
+}
+
+function clockToMinutes(value) {
+  const match = String(value || '').match(/^(\d{1,2}):(\d{2})$/);
+  if (!match) return NaN;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (!Number.isInteger(hour) || !Number.isInteger(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) return NaN;
+  return hour * 60 + minute;
+}
+
+function normalizeClock(value, fallback) {
+  const minutes = clockToMinutes(value);
+  if (!Number.isFinite(minutes)) return fallback;
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+  return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');
+}
+
+function normalizeNumber(value, fallback, min = 0, max = 10) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(n * 100) / 100));
+}
+
+function normalizeCompanyRules(rules) {
+  const base = cloneDefaultCompanyRules();
+  const safe = rules || {};
+  const work = safe.workSchedule || {};
+  const overtime = safe.overtime || {};
+  const specialDays = safe.specialDays || {};
+  const leave = safe.leaveDeductionMultipliers || {};
+
+  let standardStart = normalizeClock(work.standardStart, base.workSchedule.standardStart);
+  let standardEnd = normalizeClock(work.standardEnd, base.workSchedule.standardEnd);
+  if (clockToMinutes(standardEnd) <= clockToMinutes(standardStart)) {
+    standardStart = base.workSchedule.standardStart;
+    standardEnd = base.workSchedule.standardEnd;
+  }
+
+  const unpaidBreakEnabled = work.unpaidBreakEnabled !== false;
+  let lunchStart = normalizeClock(work.lunchStart, base.workSchedule.lunchStart);
+  let lunchEnd = normalizeClock(work.lunchEnd, base.workSchedule.lunchEnd);
+  if (unpaidBreakEnabled && clockToMinutes(lunchEnd) <= clockToMinutes(lunchStart)) {
+    lunchStart = base.workSchedule.lunchStart;
+    lunchEnd = base.workSchedule.lunchEnd;
+  }
+
+  let weekdayStart = normalizeClock(overtime.weekdayStart, base.overtime.weekdayStart);
+  if (clockToMinutes(weekdayStart) < clockToMinutes(standardEnd)) weekdayStart = standardEnd;
+
+  let restDayStart = normalizeClock(overtime.restDayStart, base.overtime.restDayStart);
+  let restDayEnd = normalizeClock(overtime.restDayEnd, base.overtime.restDayEnd);
+  if (clockToMinutes(restDayEnd) <= clockToMinutes(restDayStart)) {
+    restDayStart = base.overtime.restDayStart;
+    restDayEnd = base.overtime.restDayEnd;
+  }
+  let restDayOvertimeStart = normalizeClock(overtime.restDayOvertimeStart, base.overtime.restDayOvertimeStart);
+  if (clockToMinutes(restDayOvertimeStart) < clockToMinutes(restDayEnd)) restDayOvertimeStart = restDayEnd;
+
+  const leaveDeductionMultipliers = {};
+  Object.keys(base.leaveDeductionMultipliers).forEach(type => {
+    leaveDeductionMultipliers[type] = normalizeNumber(leave[type], base.leaveDeductionMultipliers[type], 0, 1);
+  });
+
+  return {
+    presetId: safe.presetId || base.presetId,
+    workSchedule: {
+      standardStart,
+      standardEnd,
+      unpaidBreakEnabled,
+      lunchStart,
+      lunchEnd
+    },
+    overtime: {
+      weekdayStart,
+      restDayStart,
+      restDayEnd,
+      restDayOvertimeStart,
+      firstTwoHoursMultiplier: normalizeNumber(overtime.firstTwoHoursMultiplier, base.overtime.firstTwoHoursMultiplier, 0, 5),
+      afterTwoHoursMultiplier: normalizeNumber(overtime.afterTwoHoursMultiplier, base.overtime.afterTwoHoursMultiplier, 0, 5)
+    },
+    specialDays: {
+      holidayDefaultMode: specialDays.holidayDefaultMode === 'comp_leave' ? 'comp_leave' : 'pay_day'
+    },
+    leaveDeductionMultipliers
+  };
+}
+
+function getCompanyRules(data) {
+  if (data) return normalizeCompanyRules(data.companyRules);
+  return normalizeCompanyRules(getData().companyRules);
+}
+
 function createEmptyData() {
-  return { employees: [], attendance: [], leaveRecs: [], holidayOverrides: [], insuranceRates: [], monthlyPayrollAdjustments: [] };
+  return {
+    employees: [],
+    attendance: [],
+    leaveRecs: [],
+    holidayOverrides: [],
+    insuranceRates: [],
+    monthlyPayrollAdjustments: [],
+    companyRules: cloneDefaultCompanyRules()
+  };
 }
 
 function normalizeData(data) {
@@ -852,7 +1125,8 @@ function normalizeData(data) {
     leaveRecs: Array.isArray(safe.leaveRecs) ? safe.leaveRecs : [],
     holidayOverrides: Array.isArray(safe.holidayOverrides) ? safe.holidayOverrides : [],
     insuranceRates: Array.isArray(safe.insuranceRates) ? safe.insuranceRates : [],
-    monthlyPayrollAdjustments: Array.isArray(safe.monthlyPayrollAdjustments) ? safe.monthlyPayrollAdjustments : []
+    monthlyPayrollAdjustments: Array.isArray(safe.monthlyPayrollAdjustments) ? safe.monthlyPayrollAdjustments : [],
+    companyRules: normalizeCompanyRules(safe.companyRules)
   };
 }
 
@@ -1605,9 +1879,26 @@ function buildMonthlyAdjustmentNote(adjustment) {
   ].filter(Boolean).join(' / ');
 }
 
-function getLunchDeductionMinutes(startMin, endMin) {
+function getRuleTimeMinutes(rules = getCompanyRules()) {
+  const safeRules = normalizeCompanyRules(rules);
+  return {
+    workStart: clockToMinutes(safeRules.workSchedule.standardStart),
+    workEnd: clockToMinutes(safeRules.workSchedule.standardEnd),
+    lunchStart: clockToMinutes(safeRules.workSchedule.lunchStart),
+    lunchEnd: clockToMinutes(safeRules.workSchedule.lunchEnd),
+    weekdayOtStart: clockToMinutes(safeRules.overtime.weekdayStart),
+    restDayStart: clockToMinutes(safeRules.overtime.restDayStart),
+    restDayEnd: clockToMinutes(safeRules.overtime.restDayEnd),
+    restDayOtStart: clockToMinutes(safeRules.overtime.restDayOvertimeStart)
+  };
+}
+
+function getLunchDeductionMinutes(startMin, endMin, rules = getCompanyRules()) {
   if (endMin <= startMin) return 0;
-  return Math.max(0, Math.min(endMin, LUNCH_END) - Math.max(startMin, LUNCH_START));
+  const safeRules = normalizeCompanyRules(rules);
+  if (!safeRules.workSchedule.unpaidBreakEnabled) return 0;
+  const times = getRuleTimeMinutes(safeRules);
+  return Math.max(0, Math.min(endMin, times.lunchEnd) - Math.max(startMin, times.lunchStart));
 }
 
 function getYearMonthFromDate(dateStr) {
@@ -1678,30 +1969,46 @@ function getHourlyRate(emp, year, month) {
   return emp.type === 'hourly' ? emp.salary : getMonthlySalaryBasis(emp, year, month).hourlyRate;
 }
 
-function getDayRate(emp, year, month) {
-  return emp.type === 'hourly' ? getHourlyRate(emp, year, month) * 8 : getMonthlySalaryBasis(emp, year, month).dayRate;
+function getDayRate(emp, year, month, rules = getCompanyRules()) {
+  const standardHours = getStandardWorkdayMinutes(rules) / 60;
+  return emp.type === 'hourly' ? getHourlyRate(emp, year, month) * standardHours : getMonthlySalaryBasis(emp, year, month).dayRate;
 }
 
-function getWorkedMinutes(cIn, cOut) {
+function getWorkedMinutes(cIn, cOut, rules = getCompanyRules()) {
   if (cOut <= cIn) return 0;
-  return Math.max(0, cOut - cIn - getLunchDeductionMinutes(cIn, cOut));
+  return Math.max(0, cOut - cIn - getLunchDeductionMinutes(cIn, cOut, rules));
 }
 
-function getSaturdayPayableMinutes(cIn, cOut) {
+function getStandardWorkdayMinutes(rules = getCompanyRules()) {
+  const times = getRuleTimeMinutes(rules);
+  return getWorkedMinutes(times.workStart, times.workEnd, rules);
+}
+
+function getOvertimePay(otHours, hourlyRate, rules = getCompanyRules()) {
+  const safeRules = normalizeCompanyRules(rules);
+  if (otHours <= 0) return 0;
+  const rate1 = safeRules.overtime.firstTwoHoursMultiplier;
+  const rate2 = safeRules.overtime.afterTwoHoursMultiplier;
+  if (otHours <= 2) return otHours * hourlyRate * rate1;
+  return 2 * hourlyRate * rate1 + (otHours - 2) * hourlyRate * rate2;
+}
+
+function getSaturdayPayableMinutes(cIn, cOut, rules = getCompanyRules()) {
   if (cOut <= cIn) return 0;
-  const normalSegmentStart = Math.max(cIn, WORK_START);
-  const normalSegmentEnd = Math.min(cOut, WORK_END);
+  const times = getRuleTimeMinutes(rules);
+  const normalSegmentStart = Math.max(cIn, times.restDayStart);
+  const normalSegmentEnd = Math.min(cOut, times.restDayEnd);
   const standardMinutes = normalSegmentEnd > normalSegmentStart
-    ? Math.max(0, normalSegmentEnd - normalSegmentStart - getLunchDeductionMinutes(normalSegmentStart, normalSegmentEnd))
+    ? Math.max(0, normalSegmentEnd - normalSegmentStart - getLunchDeductionMinutes(normalSegmentStart, normalSegmentEnd, rules))
     : 0;
-  const afterOtStartMinutes = cOut > OT_START
-    ? Math.max(0, cOut - Math.max(cIn, OT_START))
+  const afterOtStartMinutes = cOut > times.restDayOtStart
+    ? Math.max(0, cOut - Math.max(cIn, times.restDayOtStart))
     : 0;
   return standardMinutes + afterOtStartMinutes;
 }
 
-function getHolidayMode(rec) {
-  return rec.holidayMode || 'pay_day';
+function getHolidayMode(rec, rules = getCompanyRules()) {
+  return rec.holidayMode || normalizeCompanyRules(rules).specialDays.holidayDefaultMode;
 }
 
 function calcRecord(rec, emp) {
@@ -1712,50 +2019,46 @@ function calcRecord(rec, emp) {
   const cIn  = toMin(rec.checkIn);
   const cOut = toMin(rec.checkOut);
   const dt   = rec.dayType;
+  const rules = getCompanyRules();
+  const times = getRuleTimeMinutes(rules);
+  const standardHours = Math.round((getStandardWorkdayMinutes(rules) / 60) * 100) / 100;
 
   if (dt === 'sunday') {
-    const dayRate = getDayRate(emp, year, month);
+    const dayRate = getDayRate(emp, year, month, rules);
     return {
       tardinessMin:  0,
       earlyLeaveMin: 0,
       normalHours:   0,
-      otHours:       8,
+      otHours:       standardHours,
       otPay:         Math.round(dayRate),
       tardinessDeduct: 0,
       earlyLeaveDeduct: 0,
-      compLeave:     8,
+      compLeave:     standardHours,
       specialDayType: dt
     };
   }
 
   if (dt === 'holiday') {
-    const holidayMode = getHolidayMode(rec);
-    const dayRate = getDayRate(emp, year, month);
+    const holidayMode = getHolidayMode(rec, rules);
+    const dayRate = getDayRate(emp, year, month, rules);
     return {
       tardinessMin: 0,
       earlyLeaveMin: 0,
       normalHours: 0,
-      otHours: 8,
+      otHours: standardHours,
       otPay: holidayMode === 'pay_day' ? Math.round(dayRate) : 0,
       tardinessDeduct: 0,
       earlyLeaveDeduct: 0,
-      compLeave: holidayMode === 'comp_leave' ? 8 : 0,
+      compLeave: holidayMode === 'comp_leave' ? standardHours : 0,
       specialDayType: dt
     };
   }
 
   if (dt === 'saturday') {
-    const workedMinutes = getSaturdayPayableMinutes(cIn, cOut);
+    const workedMinutes = getSaturdayPayableMinutes(cIn, cOut, rules);
     const otHours = Math.round((workedMinutes / 60) * 100) / 100;
 
-    let otPay = 0;
-    if (otHours > 0) {
-      if (otHours <= 2) {
-        otPay = otHours * hr * OT_RATE1;
-      } else {
-        otPay = 2 * hr * OT_RATE1 + (otHours - 2) * hr * OT_RATE2;
-      }
-    }
+    const otPay = getOvertimePay(otHours, hr, rules);
 
     return {
       tardinessMin: 0,
@@ -1770,54 +2073,44 @@ function calcRecord(rec, emp) {
     };
   }
 
-  const leaveCoverage = getLeaveCoverageForAttendance(rec, cIn, cOut);
+  const leaveCoverage = getLeaveCoverageForAttendance(rec, cIn, cOut, rules);
 
   // Tardiness
-  const rawTardinessMin = cIn > WORK_START
-    ? getWorkedMinutes(WORK_START, Math.min(cIn, WORK_END))
+  const rawTardinessMin = cIn > times.workStart
+    ? getWorkedMinutes(times.workStart, Math.min(cIn, times.workEnd), rules)
     : 0;
   const tardinessMin = Math.max(0, rawTardinessMin - leaveCoverage.tardinessCoveredMinutes);
   const tardinessDeduct = tardinessMin * pmr;
 
   // Early leave
-  const rawEarlyLeaveMin = cOut < WORK_END
-    ? getWorkedMinutes(Math.max(cOut, WORK_START), WORK_END)
+  const rawEarlyLeaveMin = cOut < times.workEnd
+    ? getWorkedMinutes(Math.max(cOut, times.workStart), times.workEnd, rules)
     : 0;
   const earlyLeaveMin = Math.max(0, rawEarlyLeaveMin - leaveCoverage.earlyLeaveCoveredMinutes);
   const earlyLeaveDeduct = earlyLeaveMin * pmr;
 
-  // Normal hours (08:00 - 17:00 region, minus lunch)
-  const effIn  = Math.max(cIn,  WORK_START);
-  const effOut = Math.min(cOut, WORK_END);
+  // Normal hours inside the configured standard workday, minus unpaid break.
+  const effIn  = Math.max(cIn,  times.workStart);
+  const effOut = Math.min(cOut, times.workEnd);
   let normalMinutes = 0;
   if (effOut > effIn) {
-    normalMinutes = getWorkedMinutes(effIn, effOut);
+    normalMinutes = getWorkedMinutes(effIn, effOut, rules);
   }
   const payableNormalMinutes = Math.min(
-    STANDARD_WORKDAY_MINUTES,
+    getStandardWorkdayMinutes(rules),
     normalMinutes + leaveCoverage.paidCoveredMinutes
   );
 
   // Overtime
   let otHours = 0;
   if (dt === 'saturday') {
-    // All hours worked on Saturday = overtime (normal + after 18:00)
-    otHours = normalHours;
-    if (cOut > OT_START) otHours += (cOut - OT_START) / 60;
+    otHours = getSaturdayPayableMinutes(cIn, cOut, rules) / 60;
   } else {
-    // Weekday: overtime only after 18:00
-    if (cOut > OT_START) otHours = (cOut - OT_START) / 60;
+    if (cOut > times.weekdayOtStart) otHours = (cOut - times.weekdayOtStart) / 60;
   }
 
   // Overtime pay
-  let otPay = 0;
-  if (otHours > 0) {
-    if (otHours <= 2) {
-      otPay = otHours * hr * OT_RATE1;
-    } else {
-      otPay = 2 * hr * OT_RATE1 + (otHours - 2) * hr * OT_RATE2;
-    }
-  }
+  const otPay = getOvertimePay(otHours, hr, rules);
 
   return {
     tardinessMin,
@@ -2161,10 +2454,11 @@ function openAttModal(id) {
   refreshEmpSelects();
   document.getElementById('attId').value = '';
   document.getElementById('attDate').value = '';
-  document.getElementById('attIn').value = '08:00';
-  document.getElementById('attOut').value = '17:00';
+  const rules = getCompanyRules();
+  document.getElementById('attIn').value = rules.workSchedule.standardStart;
+  document.getElementById('attOut').value = rules.workSchedule.standardEnd;
   document.getElementById('attDayType').value = 'normal';
-  document.getElementById('attHolidayMode').value = 'pay_day';
+  document.getElementById('attHolidayMode').value = rules.specialDays.holidayDefaultMode;
   document.getElementById('attNote').value = '';
   document.getElementById('attPreview').innerHTML = '—';
   document.getElementById('dayTypeHint').innerHTML = '';
@@ -2256,6 +2550,7 @@ function updateAttPreview() {
   if (!emp) return;
 
   const rec = { empId, date, checkIn, checkOut, dayType, holidayMode };
+  const rules = getCompanyRules();
   const c = calcRecord(rec, emp);
 
   let html = `<table class="table table-sm table-borderless mb-0 small">`;
@@ -2280,7 +2575,7 @@ function updateAttPreview() {
       ? `<tr><td colspan="4" class="text-danger">國定假日：本次採「加發 1 日工資」，金額 ${fmtN(c.otPay)} 元，不另給補休。</td></tr>`
       : `<tr><td colspan="4" class="text-danger">國定假日：本次採「補休 8 小時」，不另計 1 日工資。</td></tr>`;
   if (c.specialDayType === 'saturday')
-    html += `<tr><td colspan="4" class="text-purple">休息日加班會以 08:00~17:00 的 8 小時為基礎計薪；08:00 前與 17:00~18:00 不計薪，18:00 後再另計。</td></tr>`;
+    html += `<tr><td colspan="4" class="text-purple">休息日加班會以 ${rules.overtime.restDayStart}~${rules.overtime.restDayEnd} 的基礎區間計薪；${rules.overtime.restDayOvertimeStart} 後再另計延長時段。</td></tr>`;
   html += `</table>`;
   document.getElementById('attPreview').innerHTML = html;
 }
@@ -2340,15 +2635,7 @@ function getMonthEndDate(dateStr) {
   return `${year}-${String(month).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
 }
 
-const LEAVE_DEDUCTION_MULTIPLIER = {
-  annual: 0,
-  personal: 1,
-  sick: 0.5,
-  menstrual: 0.5,
-  bereavement: 0,
-  comp_use: 0,
-  other: 0
-};
+const LEAVE_DEDUCTION_MULTIPLIER = DEFAULT_COMPANY_RULES.leaveDeductionMultipliers;
 
 const BEREAVEMENT_TIER_LABEL = {
   '8': '8 天',
@@ -2364,11 +2651,12 @@ function getLeaveRecordMinutes(rec) {
   if (leaveUsesHours(rec.type)) {
     return Math.max(0, Math.round((rec.hours || 0) * 60));
   }
-  return Math.max(0, Math.round((rec.days || 0) * STANDARD_WORKDAY_MINUTES));
+  return Math.max(0, Math.round((rec.days || 0) * getStandardWorkdayMinutes()));
 }
 
-function getLeavePaidRatio(type) {
-  const multiplier = LEAVE_DEDUCTION_MULTIPLIER[type] ?? 0;
+function getLeavePaidRatio(type, rules = getCompanyRules()) {
+  const multipliers = normalizeCompanyRules(rules).leaveDeductionMultipliers;
+  const multiplier = multipliers[type] ?? 0;
   return Math.max(0, 1 - multiplier);
 }
 
@@ -2377,7 +2665,7 @@ function getSameDayLeaveRecords(empId, date) {
   return getData().leaveRecs.filter(rec => rec.empId === empId && rec.date === date);
 }
 
-function getLeaveCoverageForAttendance(attendanceRec, checkInMin, checkOutMin) {
+function getLeaveCoverageForAttendance(attendanceRec, checkInMin, checkOutMin, rules = getCompanyRules()) {
   if (!attendanceRec || attendanceRec.dayType !== 'normal') {
     return {
       tardinessCoveredMinutes: 0,
@@ -2386,11 +2674,12 @@ function getLeaveCoverageForAttendance(attendanceRec, checkInMin, checkOutMin) {
     };
   }
 
-  const rawTardinessMin = checkInMin > WORK_START
-    ? getWorkedMinutes(WORK_START, Math.min(checkInMin, WORK_END))
+  const times = getRuleTimeMinutes(rules);
+  const rawTardinessMin = checkInMin > times.workStart
+    ? getWorkedMinutes(times.workStart, Math.min(checkInMin, times.workEnd), rules)
     : 0;
-  const rawEarlyLeaveMin = checkOutMin < WORK_END
-    ? getWorkedMinutes(Math.max(checkOutMin, WORK_START), WORK_END)
+  const rawEarlyLeaveMin = checkOutMin < times.workEnd
+    ? getWorkedMinutes(Math.max(checkOutMin, times.workStart), times.workEnd, rules)
     : 0;
 
   const segments = [
@@ -2403,7 +2692,7 @@ function getLeaveCoverageForAttendance(attendanceRec, checkInMin, checkOutMin) {
 
   for (const leaveRec of getSameDayLeaveRecords(attendanceRec.empId, attendanceRec.date)) {
     let remainingLeaveMinutes = getLeaveRecordMinutes(leaveRec);
-    const paidRatio = getLeavePaidRatio(leaveRec.type);
+    const paidRatio = getLeavePaidRatio(leaveRec.type, rules);
 
     for (const segment of segments) {
       if (remainingLeaveMinutes <= 0) break;
@@ -2510,7 +2799,7 @@ function getLeaveDeductionImpact(rec, emp) {
   const hours = minutes / 60;
   const { year, month } = getYearMonthFromDate(rec.date);
   const hourlyRate = getHourlyRate(emp, year, month);
-  const multiplier = LEAVE_DEDUCTION_MULTIPLIER[rec.type] ?? 0;
+  const multiplier = normalizeCompanyRules(getCompanyRules()).leaveDeductionMultipliers[rec.type] ?? 0;
   const deduct = multiplier > 0 && emp.type === 'monthly'
     ? Math.round(hourlyRate * hours * multiplier)
     : 0;
@@ -3944,6 +4233,142 @@ function calculatePayroll() {
 }
 
 // =============================================
+//  COMPANY RULE SETTINGS
+// =============================================
+function setElementValue(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.value = value;
+}
+
+function setElementChecked(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.checked = !!value;
+}
+
+function getRuleInputValue(id, fallback = '') {
+  const el = document.getElementById(id);
+  return el && el.value !== '' ? el.value : fallback;
+}
+
+function getRuleInputNumber(id, fallback) {
+  const value = Number(getRuleInputValue(id, fallback));
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function renderRulesSettings() {
+  const rules = getCompanyRules();
+  setElementValue('ruleStandardStart', rules.workSchedule.standardStart);
+  setElementValue('ruleStandardEnd', rules.workSchedule.standardEnd);
+  setElementChecked('ruleUnpaidBreakEnabled', rules.workSchedule.unpaidBreakEnabled);
+  setElementValue('ruleLunchStart', rules.workSchedule.lunchStart);
+  setElementValue('ruleLunchEnd', rules.workSchedule.lunchEnd);
+  setElementValue('ruleWeekdayOtStart', rules.overtime.weekdayStart);
+  setElementValue('ruleRestDayStart', rules.overtime.restDayStart);
+  setElementValue('ruleRestDayEnd', rules.overtime.restDayEnd);
+  setElementValue('ruleRestDayOtStart', rules.overtime.restDayOvertimeStart);
+  setElementValue('ruleOtRateFirstTwo', rules.overtime.firstTwoHoursMultiplier);
+  setElementValue('ruleOtRateAfterTwo', rules.overtime.afterTwoHoursMultiplier);
+  setElementValue('ruleHolidayDefaultMode', rules.specialDays.holidayDefaultMode);
+
+  Object.entries(rules.leaveDeductionMultipliers).forEach(([type, multiplier]) => {
+    setElementValue('ruleLeaveDeduct_' + type, Math.round(multiplier * 100));
+  });
+
+  const badge = document.getElementById('rulePresetBadge');
+  if (badge) badge.textContent = rules.presetId || 'custom';
+
+  const summary = document.getElementById('ruleSummary');
+  if (summary) {
+    const standardHours = Math.round((getStandardWorkdayMinutes(rules) / 60) * 100) / 100;
+    const breakText = rules.workSchedule.unpaidBreakEnabled
+      ? rules.workSchedule.lunchStart + '~' + rules.workSchedule.lunchEnd + ' 不計薪'
+      : '午休不扣除';
+    summary.innerHTML = [
+      '標準工時：' + rules.workSchedule.standardStart + '~' + rules.workSchedule.standardEnd + '，每日 ' + standardHours + ' 小時',
+      '午休：' + breakText,
+      '平日加班：' + rules.overtime.weekdayStart + ' 後起算',
+      '加班倍率：前 2 小時 ' + rules.overtime.firstTwoHoursMultiplier + '，第 3 小時後 ' + rules.overtime.afterTwoHoursMultiplier
+    ].join('<br>');
+  }
+}
+
+function collectCompanyRulesFromForm() {
+  const current = getCompanyRules();
+  const rawRules = {
+    presetId: 'custom',
+    workSchedule: {
+      standardStart: getRuleInputValue('ruleStandardStart', current.workSchedule.standardStart),
+      standardEnd: getRuleInputValue('ruleStandardEnd', current.workSchedule.standardEnd),
+      unpaidBreakEnabled: !!document.getElementById('ruleUnpaidBreakEnabled')?.checked,
+      lunchStart: getRuleInputValue('ruleLunchStart', current.workSchedule.lunchStart),
+      lunchEnd: getRuleInputValue('ruleLunchEnd', current.workSchedule.lunchEnd)
+    },
+    overtime: {
+      weekdayStart: getRuleInputValue('ruleWeekdayOtStart', current.overtime.weekdayStart),
+      restDayStart: getRuleInputValue('ruleRestDayStart', current.overtime.restDayStart),
+      restDayEnd: getRuleInputValue('ruleRestDayEnd', current.overtime.restDayEnd),
+      restDayOvertimeStart: getRuleInputValue('ruleRestDayOtStart', current.overtime.restDayOvertimeStart),
+      firstTwoHoursMultiplier: getRuleInputNumber('ruleOtRateFirstTwo', current.overtime.firstTwoHoursMultiplier),
+      afterTwoHoursMultiplier: getRuleInputNumber('ruleOtRateAfterTwo', current.overtime.afterTwoHoursMultiplier)
+    },
+    specialDays: {
+      holidayDefaultMode: getRuleInputValue('ruleHolidayDefaultMode', current.specialDays.holidayDefaultMode)
+    },
+    leaveDeductionMultipliers: {}
+  };
+
+  Object.keys(DEFAULT_COMPANY_RULES.leaveDeductionMultipliers).forEach(type => {
+    rawRules.leaveDeductionMultipliers[type] = getRuleInputNumber(
+      'ruleLeaveDeduct_' + type,
+      current.leaveDeductionMultipliers[type] * 100
+    ) / 100;
+  });
+
+  const rawTimes = {
+    workStart: clockToMinutes(rawRules.workSchedule.standardStart),
+    workEnd: clockToMinutes(rawRules.workSchedule.standardEnd),
+    lunchStart: clockToMinutes(rawRules.workSchedule.lunchStart),
+    lunchEnd: clockToMinutes(rawRules.workSchedule.lunchEnd),
+    weekdayOtStart: clockToMinutes(rawRules.overtime.weekdayStart),
+    restDayStart: clockToMinutes(rawRules.overtime.restDayStart),
+    restDayEnd: clockToMinutes(rawRules.overtime.restDayEnd),
+    restDayOtStart: clockToMinutes(rawRules.overtime.restDayOvertimeStart)
+  };
+  if (!Object.values(rawTimes).every(Number.isFinite)) throw new Error('請確認時間欄位格式。');
+  if (rawTimes.workEnd <= rawTimes.workStart) throw new Error('標準下班時間必須晚於上班時間。');
+  if (rawRules.workSchedule.unpaidBreakEnabled && rawTimes.lunchEnd <= rawTimes.lunchStart) throw new Error('午休結束時間必須晚於開始時間。');
+  if (rawTimes.weekdayOtStart < rawTimes.workEnd) throw new Error('平日加班起算不可早於標準下班時間。');
+  if (rawTimes.restDayEnd <= rawTimes.restDayStart) throw new Error('休息日基礎結束時間必須晚於開始時間。');
+  if (rawTimes.restDayOtStart < rawTimes.restDayEnd) throw new Error('休息日延長起算不可早於基礎結束時間。');
+  return normalizeCompanyRules(rawRules);
+}
+
+function saveCompanyRules() {
+  try {
+    const d = getData();
+    d.companyRules = collectCompanyRulesFromForm();
+    saveData(d);
+    renderRulesSettings();
+    renderAttendance();
+    renderReports();
+    alert('公司規則已儲存。');
+  } catch (err) {
+    alert(err.message || '公司規則儲存失敗，請確認欄位內容。');
+  }
+}
+
+function resetCompanyRulesToTaiwanDefault() {
+  if (!confirm('確定還原為台灣預設規則？員工、出勤、請假與薪資資料不會被刪除。')) return;
+  const d = getData();
+  d.companyRules = cloneDefaultCompanyRules();
+  saveData(d);
+  renderRulesSettings();
+  renderAttendance();
+  renderReports();
+  alert('已還原台灣預設規則。');
+}
+
+// =============================================
 //  BACKUP
 // =============================================
 function exportData() {
@@ -3978,6 +4403,7 @@ function importData(input) {
       initHolidayYearFilter();
       renderHolidayOverrides();
       resetHolidayOverrideForm();
+      renderRulesSettings();
       renderReports();
       alert('匯入成功！');
     } catch {
@@ -4001,6 +4427,7 @@ function clearAllData() {
   initHolidayYearFilter();
   renderHolidayOverrides();
   resetHolidayOverrideForm();
+  renderRulesSettings();
   renderReports();
   alert('已清除所有資料');
 }
@@ -4027,6 +4454,9 @@ document.querySelectorAll('#mainTabs .nav-link').forEach(link => {
     if (link.dataset.tab === 'payroll') {
       const pm = document.getElementById('payMonth');
       if (!pm.value) pm.value = document.getElementById('attMonth').value;
+    }
+    if (link.dataset.tab === 'rules') {
+      renderRulesSettings();
     }
     if (link.dataset.tab === 'reports') {
       const rm = document.getElementById('reportMonth');
@@ -4071,6 +4501,7 @@ function init() {
   initHolidayYearFilter();
   renderLeave();
   renderHolidayOverrides();
+  renderRulesSettings();
   renderReports();
 
   // Show first tab
