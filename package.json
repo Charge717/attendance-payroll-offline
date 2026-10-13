@@ -1,11 +1,11 @@
 {
   "name": "attendance-payroll-offline",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": false,
   "description": "Offline-first attendance and payroll tool with a tested Taiwan payroll preset and configurable rules.",
   "scripts": {
     "test": "node --test tests/payroll-calculation.test.js",
-    "check": "node --check tests/payroll-calculation.test.js",
+    "check": "node scripts/check-app.js && node --check tests/payroll-calculation.test.js",
     "i18n:audit": "node scripts/i18n-audit.js",
     "privacy:audit": "node scripts/privacy-audit.js"
   },

@@ -9,7 +9,7 @@ Offline-first attendance and payroll software with a tested Taiwan payroll prese
 [![No Server](https://img.shields.io/badge/server-not%20required-brightgreen.svg)](#quick-start)
 [![Offline First](https://img.shields.io/badge/offline-first-lightblue.svg)](#privacy-and-data)
 [![Taiwan Preset](https://img.shields.io/badge/payroll%20preset-Taiwan%202026-red.svg)](#scope)
-[![Version](https://img.shields.io/badge/version-v2.2-informational.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.3-informational.svg)](CHANGELOG.md)
 
 <p align="center">
   <a href="https://charge717.github.io/attendance-payroll-offline/"><strong>Try the demo</strong></a>
@@ -80,6 +80,16 @@ Small teams often need a transparent payroll tool that does not require a SaaS s
 - JSON backup and restore
 - Demo data for safe public testing
 - Privacy audit script to reduce accidental payroll-data commits
+
+### Saved Monthly Settlements (v2.3)
+
+- Save and lock payroll results; reports, payslips and spreadsheets use the saved results.
+- Reopen with a required reason and retain every saved revision.
+- Schedule company rules by effective month, preserving earlier rules.
+- Validate and preview JSON restores; retain the pre-import data for recovery.
+- See [v2.3 workflow and limitations](docs/v2.3-workflow.md).
+
+The current app interface is Traditional Chinese. English documentation remains available; the legacy i18n audit currently skips translation checks because the app has no translation runtime.
 
 ## Quick Start
 

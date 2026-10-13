@@ -129,6 +129,115 @@ function seedData(app, data) {
   }));
 }
 
+function settlementEmployee() {
+  return { id: 'emp-settlement', name: 'Settlement Example', type: 'monthly', salary: 30000,
+    bonus: 0, labor: 0, health: 0, retirement: 0, other: 0, active: true };
+}
+
+test('saved settlement keeps payroll and outputs unchanged after company rule changes', () => {
+  const app = loadApp();
+  const emp = settlementEmployee();
+  seedData(app, { employees: [emp], attendance: [{ id: 'att-settlement', empId: emp.id,
+    date: '2026-10-01', checkIn: '08:00', checkOut: '19:00', dayType: 'normal' }] });
+  const saved = app.savePayrollSettlement(2026, 10);
+  const data = app.getData();
+  app.scheduleCompanyRules(data, { overtime: { firstTwoHoursMultiplier: 5 } }, '2026-10');
+  data.employees[0].salary = 45000;
+  data.employees[0].name = 'Changed Name';
+  app.saveData(data);
+  assert.equal(app.buildPayrollSnapshots(2026, 10)[0].summary.netPay, saved.snapshots[0].summary.netPay);
+  assert.equal(JSON.stringify(app.buildPayrollSnapshots(2026, 10)), JSON.stringify(saved.snapshots));
+  assert.match(app.buildPayslipPrintHtml(saved.snapshots[0]), /Settlement Example/);
+  assert.throws(() => app.savePayrollSettlement(2026, 10), /已鎖定/);
+  app.document.getElementById('payMonth').value = '2026-10';
+  app.document.getElementById('reportMonth').value = '2026-10';
+  assert.doesNotThrow(() => app.calculatePayroll());
+  assert.match(app.document.getElementById('payrollResult').innerHTML, /Settlement Example/);
+  assert.doesNotThrow(() => app.renderReports());
+  app.refreshReportEmployeeFilter();
+  assert.match(app.document.getElementById('reportEmpFilter').innerHTML, /Settlement Example/);
+});
+
+test('locked months reject attendance, leave and payroll adjustment edits', () => {
+  const app = loadApp();
+  const emp = settlementEmployee();
+  seedData(app, { employees: [emp] });
+  app.savePayrollSettlement(2026, 10);
+  for (const [field, record] of [
+    ['attendance', { id: 'att', empId: emp.id, date: '2026-10-01' }],
+    ['leaveRecs', { id: 'leave', empId: emp.id, date: '2026-10-01' }],
+    ['monthlyPayrollAdjustments', { id: 'adj', empId: emp.id, month: '2026-10' }]
+  ]) {
+    const data = app.getData(); data[field].push(record);
+    assert.throws(() => app.saveData(data), /已鎖定/);
+    assert.equal(app.getData()[field].length, 0);
+  }
+});
+
+test('reopen requires a reason and resaving retains prior settlement revision', () => {
+  const app = loadApp(); const emp = settlementEmployee();
+  seedData(app, { employees: [emp] });
+  app.savePayrollSettlement(2026, 10);
+  assert.throws(() => app.reopenPayrollSettlement(2026, 10, ' '), /原因/);
+  app.reopenPayrollSettlement(2026, 10, 'correct bonus');
+  const data = app.getData(); data.employees[0].bonus = 1000; app.saveData(data);
+  app.savePayrollSettlement(2026, 10);
+  const settlement = app.getData().payrollSettlements[0];
+  assert.equal(settlement.revisions.length, 2);
+  assert.equal(settlement.revisions[0].snapshots[0].summary.netPay, 30000);
+  assert.equal(settlement.revisions[1].snapshots[0].summary.netPay, 31000);
+  assert.equal(settlement.revisions[1].reason, 'correct bonus');
+});
+
+test('scheduled rules keep prior months on baseline and apply at the effective month', () => {
+  const app = loadApp(); const emp = settlementEmployee();
+  seedData(app, { employees: [emp] });
+  const data = app.getData();
+  app.scheduleCompanyRules(data, { overtime: { firstTwoHoursMultiplier: 2 } }, '2026-11');
+  app.saveData(data);
+  const makeRecord = date => ({ id: date, empId: emp.id, date, checkIn: '08:00', checkOut: '19:00', dayType: 'normal' });
+  assert.equal(app.calcRecord(makeRecord('2026-10-01'), emp).otPay, 168);
+  assert.equal(app.calcRecord(makeRecord('2026-11-02'), emp).otPay, 250);
+  assert.throws(() => app.scheduleCompanyRules(data, {}, '2026-13'), /有效/);
+});
+
+test('invalid imports never replace current data and valid imports preserve recovery data', () => {
+  const app = loadApp(); const emp = settlementEmployee();
+  seedData(app, { employees: [emp] });
+  const original = app.localStorage.getItem(STORAGE_KEY);
+  assert.throws(() => app.applyImportedData({ employees: {}, attendance: [] }), /陣列/);
+  assert.throws(() => app.applyImportedData({ employees: [null], attendance: [] }), /無效/);
+  assert.throws(() => app.applyImportedData({ employees: [emp], attendance: [], insuranceRates: [{}] }), /生效日期/);
+  assert.throws(() => app.applyImportedData({ employees: [{ ...emp, bonus: '1000' }], attendance: [] }), /金額/);
+  assert.throws(() => app.applyImportedData({ employees: [emp], attendance: [{ id: 'bad', empId: 'missing', date: '2026-10-01' }] }), /不存在/);
+  assert.equal(app.localStorage.getItem(STORAGE_KEY), original);
+  app.applyImportedData({ employees: [], attendance: [] });
+  assert.equal(app.getData().employees.length, 0);
+  assert.equal(app.localStorage.getItem(STORAGE_KEY + '_before_import'), original);
+});
+
+test('storage failure during restore preserves active data', () => {
+  const app = loadApp(); const emp = settlementEmployee();
+  seedData(app, { employees: [emp] });
+  const original = app.localStorage.getItem(STORAGE_KEY);
+  const write = app.localStorage.setItem;
+  app.localStorage.setItem = (key, value) => { if (key === STORAGE_KEY) throw new Error('Quota exceeded'); write(key, value); };
+  assert.throws(() => app.applyImportedData({ employees: [], attendance: [] }), /Quota/);
+  assert.equal(app.localStorage.getItem(STORAGE_KEY), original);
+});
+
+test('fresh installations and settlement backup round trips preserve new structures', () => {
+  const app = loadApp();
+  assert.equal(app.getData().payrollSettlements.length, 0);
+  assert.equal(app.getData().companyRuleVersions.length, 0);
+  seedData(app, { employees: [settlementEmployee()] });
+  app.savePayrollSettlement(2026, 10);
+  const saved = JSON.stringify(app.getData());
+  assert.doesNotThrow(() => app.validateImportData(JSON.parse(saved)));
+  app.applyImportedData(JSON.parse(saved));
+  assert.equal(app.buildPayrollSnapshots(2026, 10)[0].summary.netPay, 30000);
+});
+
 test('paid half-day bereavement leave covers the morning absence and prevents tardiness deduction', () => {
   const app = loadApp();
   const emp = {
